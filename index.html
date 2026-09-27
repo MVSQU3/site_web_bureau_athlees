@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bureau des Athlètes — Badminton Côte d'Ivoire</title>
+<meta name="description" content="Site officiel du Bureau des Athlètes ivoiriens de badminton.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="nav">
+  <div class="nav-in">
+    <a href="#accueil" class="brand"><span class="flag"></span><span id="brand-name">Bureau des Athlètes</span></a>
+    <button class="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span></button>
+    <nav class="links">
+      <a href="#accueil">Accueil</a>
+      <a href="#apropos">À propos</a>
+      <a href="#athletes">Athlètes</a>
+      <a href="#actualites">Actualités</a>
+      <a href="#calendrier">Calendrier</a>
+      <a href="#contact" class="cta">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page" id="page-accueil">
+    <div class="hero">
+      <p class="eyebrow" id="hero-sub"></p>
+      <h1>La voix des athlètes.<br><span class="grad">Sur chaque volant.</span></h1>
+      <p class="lead">Nous représentons, accompagnons et faisons rayonner les joueuses et joueurs de badminton de Côte d'Ivoire.</p>
+      <div class="btns"><a class="btn primary" href="#athletes">Découvrir les athlètes</a><a class="btn ghost" href="#contact">Adhérer ›</a></div>
+    </div>
+    <div class="wrap stats" id="stats"></div>
+    <div class="wrap">
+      <h2 class="sec">À la une</h2>
+      <div class="grid3" id="home-news"></div>
+      <h2 class="sec">Prochaine compétition</h2>
+      <div id="home-next"></div>
+    </div>
+  </section>
+
+  <section class="page" id="page-apropos">
+    <div class="wrap">
+      <p class="eyebrow">À propos</p>
+      <h1 class="h1s">Par les athlètes,<br>pour les athlètes.</h1>
+      <p class="lead left">Le Bureau des Athlètes est l'instance qui défend les intérêts des sportifs de haut niveau du badminton ivoirien : conditions d'entraînement, sélection, suivi médical, reconversion.</p>
+      <div class="grid3" id="valeurs"></div>
+      <h2 class="sec">Le bureau</h2>
+      <div class="grid4" id="bureau"></div>
+    </div>
+  </section>
+
+  <section class="page" id="page-athletes">
+    <div class="wrap">
+      <p class="eyebrow">Athlètes</p>
+      <h1 class="h1s">L'équipe.</h1>
+      <div class="toolbar">
+        <input id="search" type="search" placeholder="Rechercher un athlète ou un club">
+        <div class="seg" id="seg">
+          <button data-g="all" class="on">Tous</button><button data-g="F">Dames</button><button data-g="H">Hommes</button>
+        </div>
+      </div>
+      <div class="grid4" id="athletes-list"></div>
+      <p class="empty" id="athletes-empty" hidden>Aucun athlète ne correspond.</p>
+    </div>
+  </section>
+
+  <section class="page" id="page-actualites">
+    <div class="wrap">
+      <p class="eyebrow">Actualités</p>
+      <h1 class="h1s">Les dernières nouvelles.</h1>
+      <div class="list" id="news-list"></div>
+    </div>
+  </section>
+
+  <section class="page" id="page-calendrier">
+    <div class="wrap">
+      <p class="eyebrow">Calendrier</p>
+      <h1 class="h1s">Les compétitions.</h1>
+      <div class="list" id="cal-list"></div>
+    </div>
+  </section>
+
+  <section class="page" id="page-contact">
+    <div class="wrap narrow">
+      <p class="eyebrow">Contact & adhésion</p>
+      <h1 class="h1s">Parlons-en.</h1>
+      <p class="lead left" id="contact-info"></p>
+      <form id="form" class="card form" novalidate>
+        <div class="row"><label>Nom complet<input name="nom" required></label><label>E-mail<input name="email" type="email" required></label></div>
+        <label>Objet
+          <select name="objet"><option>Demande d'adhésion</option><option>Partenariat</option><option>Presse</option><option>Autre</option></select>
+        </label>
+        <label>Message<textarea name="message" rows="5" required></textarea></label>
+        <button class="btn primary" type="submit">Envoyer</button>
+        <p class="msg" id="form-msg" role="status"></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="foot"><div class="wrap"><span id="foot-txt"></span><span>Côte d'Ivoire 🇨🇮</span></div></footer>
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
