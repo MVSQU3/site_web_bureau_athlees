@@ -89,6 +89,28 @@
     </div>
   </section>
 
+  <section class="page" id="page-inscription">
+    <div class="wrap narrow">
+      <p class="eyebrow">Inscription</p>
+      <h1 class="h1s" id="insc-titre"></h1>
+      <p class="lead left" id="insc-info"></p>
+      <form id="insc-form" class="card form" novalidate>
+        <div class="row"><label>Nom<input name="nom" required autocomplete="family-name"></label><label>Prénom(s)<input name="prenom" required autocomplete="given-name"></label></div>
+        <div class="row">
+          <label>Sexe<select name="sexe" required><option value="">Choisir…</option><option value="H">Homme</option><option value="F">Femme</option></select></label>
+          <label>Date de naissance<input name="naissance" type="date" required></label>
+        </div>
+        <div class="row"><label>Téléphone<input name="telephone" type="tel" required autocomplete="tel" placeholder="07 00 00 00 00"></label><label>E-mail<input name="email" type="email" required autocomplete="email"></label></div>
+        <label>Club / Ville<input name="club" required></label>
+        <fieldset class="tabl"><legend>Tableaux (au moins un)</legend><div id="insc-tableaux"></div></fieldset>
+        <label id="insc-part" hidden>Partenaire de double (nom et prénom)<input name="partenaire"></label>
+        <input name="site" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
+        <button class="btn primary" type="submit">Valider mon inscription</button>
+        <p class="msg" id="insc-msg" role="status"></p>
+      </form>
+    </div>
+  </section>
+
   <section class="page" id="page-contact">
     <div class="wrap narrow">
       <p class="eyebrow">Contact & adhésion</p>

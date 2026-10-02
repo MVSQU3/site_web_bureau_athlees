@@ -82,3 +82,12 @@ input:focus,select:focus,textarea:focus{border-color:var(--acc)}
 .event-prog p{font-size:13px;margin:0;opacity:.75}
 .btns.left{justify-content:flex-start}
 @media (max-width:760px){.event{grid-template-columns:1fr;padding:16px;gap:20px}.event-prog{grid-template-columns:1fr}.event-facts{grid-template-columns:1fr}}
+
+/* Formulaire d'inscription */
+.tabl{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:0;display:block}
+.tabl legend{font-size:14px;color:var(--mute);padding:0 6px}
+#insc-tableaux{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.tabl-g{display:flex;flex-direction:column;gap:8px}
+.form label.chk{flex-direction:row;align-items:center;gap:8px;color:var(--tx);font-size:15px;cursor:pointer}
+.chk input{width:18px;height:18px;padding:0;accent-color:var(--acc)}
+@media (max-width:760px){#insc-tableaux{grid-template-columns:1fr}}

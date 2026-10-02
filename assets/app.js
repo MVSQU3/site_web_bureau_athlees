@@ -38,7 +38,7 @@
         <p>${esc(E.accroche)}</p>
         <ul class="event-facts"><li><b>Dates</b>${esc(E.dates)}</li><li><b>Lieu</b>${esc(E.lieu)}</li><li><b>Inscriptions</b>jusqu'au ${fmt(E.limite)}</li><li><b>Infoline</b><a href="tel:${esc(E.infoline.replace(/\s/g, ""))}">${esc(E.infoline)}</a></li></ul>
         <div class="event-prog">${E.programme.map((p) => `<div><span class="date">${esc(p.jour)}</span><h3>${esc(p.discipline)}</h3><p>${p.tableaux.map(esc).join(" · ")}</p></div>`).join("")}</div>
-        <div class="btns left">${open ? `<a class="btn primary" href="${esc(E.inscription)}" target="_blank" rel="noopener">S'inscrire ›</a>` : `<span class="tag">Inscriptions closes</span>`}</div>
+        <div class="btns left">${open ? `<a class="btn primary" href="#inscription">S'inscrire ›</a>` : `<span class="tag">Inscriptions closes</span>`}</div>
       </div>
     </article>`;
   }
@@ -88,6 +88,41 @@
     } finally { btn.disabled = false; }
   });
 
+  // Inscription à l'événement
+  if (E) {
+    const open = d(E.limite) >= today;
+    $("#insc-titre").textContent = E.titre;
+    $("#insc-info").textContent = open ? `${E.dates} · ${E.lieu}. Inscriptions jusqu'au ${fmt(E.limite)}.` : "Les inscriptions sont closes.";
+    $("#insc-form").hidden = !open;
+    $("#insc-tableaux").innerHTML = E.programme.map((p) => `<div class="tabl-g"><span class="date">${esc(p.jour)} · ${esc(p.discipline)}</span>${p.tableaux.map((t) => {
+      const v = `${p.discipline} – ${t}`;
+      return `<label class="chk"><input type="checkbox" name="tableaux" value="${esc(v)}"> ${esc(t)}</label>`;
+    }).join("")}</div>`).join("");
+    const f = $("#insc-form"), msg = $("#insc-msg");
+    const sync = () => {
+      const isDouble = [...f.querySelectorAll("[name=tableaux]:checked")].some((c) => /Double/.test(c.value));
+      $("#insc-part").hidden = !isDouble;
+    };
+    f.addEventListener("change", sync);
+    f.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const tableaux = [...f.querySelectorAll("[name=tableaux]:checked")].map((c) => c.value);
+      if (!f.checkValidity() || !tableaux.length) { msg.className = "msg err"; msg.textContent = "Merci de remplir tous les champs et de choisir au moins un tableau."; return; }
+      const data = { ...Object.fromEntries(new FormData(f)), tableaux };
+      if ($("#insc-part").hidden) data.partenaire = "";
+      const btn = f.querySelector("button"); btn.disabled = true; msg.className = "msg"; msg.textContent = "Envoi…";
+      try {
+        const r = await fetch("/api/inscription", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+        const j = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(j.error || "Erreur");
+        msg.className = "msg ok"; msg.textContent = `Merci ${data.prenom} ! Ton inscription est enregistrée. Infoline : ${E.infoline}.`;
+        f.reset(); sync();
+      } catch (err) {
+        msg.className = "msg err"; msg.textContent = `Échec de l'envoi (${err.message}). Réessaie ou appelle l'Infoline : ${E.infoline}.`;
+      } finally { btn.disabled = false; }
+    });
+  }
+
   // Thème clair / sombre
   const sun = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
   const moon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
@@ -101,7 +136,7 @@
   paintTheme();
 
   // Navigation par onglets (hash)
-  const pages = ["accueil", "apropos", "athletes", "actualites", "calendrier", "contact"];
+  const pages = ["accueil", "apropos", "athletes", "actualites", "calendrier", "contact", "inscription"];
   const burger = $(".burger"), links = $(".links");
   const route = () => {
     const p = pages.includes(location.hash.slice(1)) ? location.hash.slice(1) : "accueil";

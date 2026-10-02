@@ -14,6 +14,19 @@ export async function db() {
     email text not null,
     objet text not null,
     message text not null
+  );
+  create table if not exists inscriptions (
+    id serial primary key,
+    created_at timestamptz not null default now(),
+    nom text not null,
+    prenom text not null,
+    sexe text not null,
+    naissance date not null,
+    telephone text not null,
+    email text not null,
+    club text not null,
+    tableaux text[] not null,
+    partenaire text not null default ''
   )`);
   await ready;
   return pool;
