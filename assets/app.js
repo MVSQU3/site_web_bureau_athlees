@@ -7,7 +7,7 @@
   const today = new Date(); today.setHours(0, 0, 0, 0);
 
   // Textes généraux
-  $("#brand-name").textContent = S.nom;
+  if ($("#brand-name")) $("#brand-name").textContent = S.nom; // facultatif (retiré de la nav)
   $("#hero-sub").textContent = `${S.nom} · ${S.sousTitre}`;
   $("#foot-txt").textContent = `© ${today.getFullYear()} ${S.nom} — ${S.sousTitre}`;
   $("#contact-info").innerHTML = `${esc(S.email)}<br><a href="tel:${esc(S.telephone.replace(/\s/g, ""))}">${esc(S.telephone)}</a><br>${esc(S.adresse)}`;
