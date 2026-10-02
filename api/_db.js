@@ -44,7 +44,7 @@ export async function db() {
       alter table inscriptions alter column prenom drop not null;
       alter table inscriptions alter column email drop not null;
     end if;
-  end $$)`);
-  await ready;
+  end $$`);
+  await ready.catch((e) => { ready = undefined; throw e; }); // réessaie au prochain appel en cas d'échec
   return pool;
 }
