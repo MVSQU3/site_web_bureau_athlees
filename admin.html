@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>Admin · Messages</title>
+<style>
+:root{--bg:#000;--card:#1c1c1e;--txt:#f5f5f7;--mut:#86868b;--line:#333;--acc:#2997ff}
+@media (prefers-color-scheme:light){:root{--bg:#f5f5f7;--card:#fff;--txt:#1d1d1f;--mut:#6e6e73;--line:#d2d2d7;--acc:#0071e3}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif}
+.wrap{max-width:960px;margin:0 auto;padding:32px 16px}h1{font-size:32px;letter-spacing:-.02em;margin:0 0 20px}
+input,button{font:inherit;border-radius:12px;border:1px solid var(--line);padding:10px 14px;background:var(--card);color:var(--txt)}
+button{background:var(--acc);border:0;color:#fff;cursor:pointer}button.ghost{background:none;color:var(--mut);border:1px solid var(--line)}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:20px}.bar .sp{flex:1}
+.m{background:var(--card);border-radius:16px;padding:18px 20px;margin-bottom:12px}.m h3{margin:0 0 2px;font-size:16px}
+.meta{color:var(--mut);font-size:13px}.m p{white-space:pre-wrap;margin:10px 0 0}.tag{font-size:12px;border:1px solid var(--line);border-radius:99px;padding:2px 10px;margin-left:6px}
+.row{display:flex;justify-content:space-between;gap:12px}.err{color:#ff453a}a{color:var(--acc)}
+</style>
+</head>
+<body><div class="wrap">
+<h1>Messages reçus</h1>
+<form class="bar" id="login"><input type="password" id="pw" placeholder="Mot de passe admin" required><button>Se connecter</button><span class="err" id="err"></span></form>
+<div id="app" hidden>
+  <div class="bar"><span id="count" class="meta"></span><span class="sp"></span><button class="ghost" id="csv">Exporter CSV</button><button class="ghost" id="out">Déconnexion</button></div>
+  <div id="list"></div>
+</div>
+</div>
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+let pw = sessionStorage.getItem("pw") || "", rows = [];
+const api = (q = "", opt = {}) => fetch("/api/messages" + q, { ...opt, headers: { Authorization: "Bearer " + pw } });
+async function load() {
+  const r = await api();
+  if (r.status === 401) { sessionStorage.removeItem("pw"); $("#err").textContent = pw ? "Mot de passe incorrect." : ""; $("#login").hidden = false; $("#app").hidden = true; return; }
+  if (!r.ok) { $("#err").textContent = "Erreur serveur (base de données configurée ?)"; return; }
+  sessionStorage.setItem("pw", pw);
+  rows = (await r.json()).messages;
+  $("#login").hidden = true; $("#app").hidden = false;
+  $("#count").textContent = rows.length + " message(s)";
+  $("#list").innerHTML = rows.map((m) => `<div class="m"><div class="row"><div><h3>${esc(m.nom)}<span class="tag">${esc(m.objet)}</span></h3><div class="meta"><a href="mailto:${esc(m.email)}">${esc(m.email)}</a> · ${new Date(m.created_at).toLocaleString("fr-FR")}</div></div><button class="ghost" data-id="${m.id}">Supprimer</button></div><p>${esc(m.message)}</p></div>`).join("") || '<p class="meta">Aucun message pour le moment.</p>';
+}
+$("#login").onsubmit = (e) => { e.preventDefault(); pw = $("#pw").value; load(); };
+$("#out").onclick = () => { sessionStorage.removeItem("pw"); pw = ""; location.reload(); };
+$("#list").onclick = async (e) => { const id = e.target.dataset.id; if (id && confirm("Supprimer ce message ?")) { await api("?id=" + id, { method: "DELETE" }); load(); } };
+$("#csv").onclick = () => {
+  const q = (v) => '"' + String(v).replace(/"/g, '""') + '"';
+  const csv = "﻿Date;Nom;E-mail;Objet;Message\n" + rows.map((m) => [new Date(m.created_at).toLocaleString("fr-FR"), m.nom, m.email, m.objet, m.message].map(q).join(";")).join("\n");
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" })); a.download = "messages.csv"; a.click();
+};
+if (pw) load();
+</script>
+</body></html>

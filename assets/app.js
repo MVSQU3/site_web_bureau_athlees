@@ -69,15 +69,23 @@
   $("#news-list").innerHTML = eventHtml + news.map((n) => `<article class="card"><p class="date">${fmt(n.date)}</p><h3>${esc(n.titre)}</h3><p>${esc(n.texte)}</p></article>`).join("");
   $("#cal-list").innerHTML = cal.map(calItem).join("");
 
-  // Formulaire : validation puis ouverture du client mail
-  $("#form").addEventListener("submit", (e) => {
+  // Formulaire : enregistrement en base via /api/contact (repli : messagerie)
+  $("#form").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const f = e.target, msg = $("#form-msg");
+    const f = e.target, msg = $("#form-msg"), btn = f.querySelector("button");
     if (!f.checkValidity()) { msg.className = "msg err"; msg.textContent = "Merci de remplir tous les champs avec un e-mail valide."; return; }
-    const body = `${f.message.value}\n\n— ${f.nom.value} (${f.email.value})`;
-    window.location.href = `mailto:${S.email}?subject=${encodeURIComponent(f.objet.value)}&body=${encodeURIComponent(body)}`;
-    msg.className = "msg ok"; msg.textContent = "Merci ! Votre messagerie s'ouvre pour finaliser l'envoi.";
-    f.reset();
+    const data = Object.fromEntries(new FormData(f));
+    btn.disabled = true; msg.className = "msg"; msg.textContent = "Envoi…";
+    try {
+      const r = await fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+      if (!r.ok) throw new Error(r.status);
+      msg.className = "msg ok"; msg.textContent = "Merci ! Votre message a bien été envoyé.";
+      f.reset();
+    } catch {
+      const body = `${data.message}\n\n— ${data.nom} (${data.email})`;
+      window.location.href = `mailto:${S.email}?subject=${encodeURIComponent(data.objet)}&body=${encodeURIComponent(body)}`;
+      msg.className = "msg ok"; msg.textContent = "Votre messagerie s'ouvre pour finaliser l'envoi.";
+    } finally { btn.disabled = false; }
   });
 
   // Thème clair / sombre
