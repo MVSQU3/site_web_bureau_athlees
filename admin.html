@@ -47,9 +47,9 @@ function render() {
   }
   const counts = {}; rows.forEach((r) => r.tableaux.forEach((t) => (counts[t] = (counts[t] || 0) + 1)));
   $("#stats").innerHTML = Object.entries(counts).map(([t, n]) => `<span class="tag">${esc(t)} : <b>${n}</b></span>`).join("");
-  $("#list").innerHTML = list.map((r) => `<div class="m"><div class="row"><div><h3>${esc(r.nom.toUpperCase())} ${esc(r.prenom)}<span class="tag">${r.sexe === "F" ? "Femme" : "Homme"}</span></h3>
-    <div class="meta">Né(e) le ${day(r.naissance)} · ${esc(r.club)} · <a href="tel:${esc(r.telephone.replace(/\s/g, ""))}">${esc(r.telephone)}</a> · <a href="mailto:${esc(r.email)}">${esc(r.email)}</a></div>
-    <div class="meta">Inscrit(e) le ${dt(r.created_at)}${r.partenaire ? " · Partenaire : " + esc(r.partenaire) : ""}</div>
+  $("#list").innerHTML = list.map((r) => `<div class="m"><div class="row"><div><h3>${esc(r.nom)}${r.prenom ? " " + esc(r.prenom) : ""}<span class="tag">${esc(r.sexe)}</span>${r.categorie ? `<span class="tag">${esc(r.categorie)}</span>` : ""}</h3>
+    <div class="meta">Né(e) le ${day(r.naissance)} · ${esc(r.club)} · Licencié : ${r.licencie === true ? "oui" : r.licencie === false ? "non" : "—"}${r.telephone ? ` · <a href="tel:${esc(r.telephone.replace(/\s/g, ""))}">${esc(r.telephone)}</a>` : ""}</div>
+    <div class="meta">Inscrit(e) le ${dt(r.created_at)}${r.partenaire ? " · Coéquipier : " + esc(r.partenaire) : ""}</div>
     <div class="chips">${r.tableaux.map((t) => `<span class="tag">${esc(t)}</span>`).join("")}</div></div>${del(r.id)}</div></div>`).join("") || '<p class="meta">Aucune inscription pour le moment.</p>';
 }
 async function load() {
@@ -75,7 +75,7 @@ $("#csv").onclick = () => {
   const list = visible();
   const csv = tab === "messages"
     ? "Date;Nom;E-mail;Objet;Message\n" + list.map((m) => [dt(m.created_at), m.nom, m.email, m.objet, m.message].map(q).join(";")).join("\n")
-    : "Date inscription;Nom;Prénom;Sexe;Naissance;Téléphone;E-mail;Club;Tableaux;Partenaire\n" + list.map((r) => [dt(r.created_at), r.nom, r.prenom, r.sexe, day(r.naissance), r.telephone, r.email, r.club, r.tableaux.join(" | "), r.partenaire].map(q).join(";")).join("\n");
+    : "Date inscription;Nom et prénoms;Naissance;Sexe;Club et ville;Licencié;Catégorie;Compétitions;Tableaux;Coéquipier;Téléphone\n" + list.map((r) => [dt(r.created_at), r.nom + (r.prenom ? " " + r.prenom : ""), day(r.naissance), r.sexe, r.club, r.licencie === true ? "oui" : r.licencie === false ? "non" : "", r.categorie, (r.competitions || []).join(" | "), r.tableaux.join(" | "), r.partenaire, r.telephone].map(q).join(";")).join("\n");
   const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["﻿" + csv], { type: "text/csv" })); a.download = tab + ".csv"; a.click();
 };
 if (pw) load();

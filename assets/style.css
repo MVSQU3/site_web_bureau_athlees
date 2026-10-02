@@ -91,3 +91,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--acc)}
 .form label.chk{flex-direction:row;align-items:center;gap:8px;color:var(--tx);font-size:15px;cursor:pointer}
 .chk input{width:18px;height:18px;padding:0;accent-color:var(--acc)}
 @media (max-width:760px){#insc-tableaux{grid-template-columns:1fr}}
+.opts{display:flex;flex-wrap:wrap;gap:10px 24px;align-items:center}.opts.col{flex-direction:column;align-items:flex-start}
+.opts input.inline{flex:1;min-width:140px;width:auto;padding:8px 12px}
+.form small{font-size:13px;opacity:.8}
+.tabl[hidden]{display:none}

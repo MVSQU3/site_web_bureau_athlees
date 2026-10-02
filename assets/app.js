@@ -94,28 +94,38 @@
     $("#insc-titre").textContent = E.titre;
     $("#insc-info").textContent = open ? `${E.dates} · ${E.lieu}. Inscriptions jusqu'au ${fmt(E.limite)}.` : "Les inscriptions sont closes.";
     $("#insc-form").hidden = !open;
-    $("#insc-tableaux").innerHTML = E.programme.map((p) => `<div class="tabl-g"><span class="date">${esc(p.jour)} · ${esc(p.discipline)}</span>${p.tableaux.map((t) => {
-      const v = `${p.discipline} – ${t}`;
-      return `<label class="chk"><input type="checkbox" name="tableaux" value="${esc(v)}"> ${esc(t)}</label>`;
-    }).join("")}</div>`).join("");
     const f = $("#insc-form"), msg = $("#insc-msg");
+    const checked = (n) => [...f.querySelectorAll(`[name=${n}]:checked`)].map((c) => c.value);
     const sync = () => {
-      const isDouble = [...f.querySelectorAll("[name=tableaux]:checked")].some((c) => /Double/.test(c.value));
-      $("#insc-part").hidden = !isDouble;
+      const comps = checked("competitions");
+      f.querySelectorAll("[data-comp]").forEach((fs) => { fs.hidden = !comps.includes(fs.dataset.comp); });
+      f.sexe_autre.disabled = checked("sexe")[0] !== "Autre";
     };
     f.addEventListener("change", sync);
     f.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const tableaux = [...f.querySelectorAll("[name=tableaux]:checked")].map((c) => c.value);
-      if (!f.checkValidity() || !tableaux.length) { msg.className = "msg err"; msg.textContent = "Merci de remplir tous les champs et de choisir au moins un tableau."; return; }
-      const data = { ...Object.fromEntries(new FormData(f)), tableaux };
-      if ($("#insc-part").hidden) data.partenaire = "";
+      const comps = checked("competitions");
+      const data = {
+        ...Object.fromEntries(new FormData(f)), competitions: comps,
+        badminton: comps.includes("BADMINTON") ? checked("badminton")[0] || "" : "",
+        parabadminton: comps.includes("PARABADMINTON") ? checked("parabadminton")[0] || "" : "",
+        airbadminton: comps.includes("AIRBADMINTON") ? checked("airbadminton") : [],
+      };
+      if (!comps.includes("AIRBADMINTON")) data.partenaire = "";
+      if (data.sexe === "Autre") data.sexe = `Autre : ${(data.sexe_autre || "").trim()}`;
+      delete data.sexe_autre;
+      const manque = !f.checkValidity() || !comps.length
+        || (comps.includes("BADMINTON") && !data.badminton)
+        || (comps.includes("PARABADMINTON") && !data.parabadminton)
+        || (comps.includes("AIRBADMINTON") && !data.airbadminton.length)
+        || data.sexe === "Autre : ";
+      if (manque) { msg.className = "msg err"; msg.textContent = "Merci de répondre à toutes les questions obligatoires (*)."; return; }
       const btn = f.querySelector("button"); btn.disabled = true; msg.className = "msg"; msg.textContent = "Envoi…";
       try {
         const r = await fetch("/api/inscription", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
         const j = await r.json().catch(() => ({}));
         if (!r.ok) throw new Error(j.error || "Erreur");
-        msg.className = "msg ok"; msg.textContent = `Merci ${data.prenom} ! Ton inscription est enregistrée. Infoline : ${E.infoline}.`;
+        msg.className = "msg ok"; msg.textContent = `Merci ! Ton inscription est enregistrée. Infoline : ${E.infoline}.`;
         f.reset(); sync();
       } catch (err) {
         msg.className = "msg err"; msg.textContent = `Échec de l'envoi (${err.message}). Réessaie ou appelle l'Infoline : ${E.infoline}.`;

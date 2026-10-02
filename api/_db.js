@@ -19,15 +19,27 @@ export async function db() {
     id serial primary key,
     created_at timestamptz not null default now(),
     nom text not null,
-    prenom text not null,
-    sexe text not null,
     naissance date not null,
-    telephone text not null,
-    email text not null,
+    sexe text not null,
     club text not null,
+    licencie boolean,
+    competitions text[] not null default '{}',
     tableaux text[] not null,
-    partenaire text not null default ''
-  )`);
+    partenaire text not null default '',
+    categorie text,
+    telephone text
+  );
+  -- mise à niveau d'une ancienne version de la table
+  alter table inscriptions add column if not exists licencie boolean;
+  alter table inscriptions add column if not exists competitions text[] not null default '{}';
+  alter table inscriptions add column if not exists categorie text;
+  alter table inscriptions alter column telephone drop not null;
+  do $$ begin
+    if exists (select 1 from information_schema.columns where table_name = 'inscriptions' and column_name = 'prenom') then
+      alter table inscriptions alter column prenom drop not null;
+      alter table inscriptions alter column email drop not null;
+    end if;
+  end $$)`);
   await ready;
   return pool;
 }

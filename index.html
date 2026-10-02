@@ -95,15 +95,48 @@
       <h1 class="h1s" id="insc-titre"></h1>
       <p class="lead left" id="insc-info"></p>
       <form id="insc-form" class="card form" novalidate>
-        <div class="row"><label>Nom<input name="nom" required autocomplete="family-name"></label><label>Prénom(s)<input name="prenom" required autocomplete="given-name"></label></div>
+        <label>Nom et prénoms *<input name="nom" required autocomplete="name"></label>
         <div class="row">
-          <label>Sexe<select name="sexe" required><option value="">Choisir…</option><option value="H">Homme</option><option value="F">Femme</option></select></label>
-          <label>Date de naissance<input name="naissance" type="date" required></label>
+          <label>Date de naissance *<input name="naissance" type="date" required></label>
+          <label>Téléphone (facultatif)<input name="telephone" type="tel" autocomplete="tel" placeholder="07 00 00 00 00"></label>
         </div>
-        <div class="row"><label>Téléphone<input name="telephone" type="tel" required autocomplete="tel" placeholder="07 00 00 00 00"></label><label>E-mail<input name="email" type="email" required autocomplete="email"></label></div>
-        <label>Club / Ville<input name="club" required></label>
-        <fieldset class="tabl"><legend>Tableaux (au moins un)</legend><div id="insc-tableaux"></div></fieldset>
-        <label id="insc-part" hidden>Partenaire de double (nom et prénom)<input name="partenaire"></label>
+        <fieldset class="tabl"><legend>Sexe *</legend><div class="opts">
+          <label class="chk"><input type="radio" name="sexe" value="HOMME" required> HOMME</label>
+          <label class="chk"><input type="radio" name="sexe" value="FEMME"> FEMME</label>
+          <label class="chk"><input type="radio" name="sexe" value="Autre"> Autre :</label>
+          <input name="sexe_autre" class="inline" aria-label="Autre, préciser" disabled>
+        </div></fieldset>
+        <label>Club et ville d'origine *<input name="club" required></label>
+        <fieldset class="tabl"><legend>Licencié *</legend><div class="opts">
+          <label class="chk"><input type="radio" name="licencie" value="oui" required> oui</label>
+          <label class="chk"><input type="radio" name="licencie" value="non"> non</label>
+        </div></fieldset>
+        <fieldset class="tabl"><legend>Compétitions *</legend><div class="opts">
+          <label class="chk"><input type="checkbox" name="competitions" value="BADMINTON"> BADMINTON</label>
+          <label class="chk"><input type="checkbox" name="competitions" value="PARABADMINTON"> PARABADMINTON</label>
+          <label class="chk"><input type="checkbox" name="competitions" value="AIRBADMINTON"> AIRBADMINTON</label>
+        </div></fieldset>
+        <fieldset class="tabl" data-comp="BADMINTON" hidden><legend>BADMINTON *</legend><div class="opts">
+          <label class="chk"><input type="radio" name="badminton" value="Simple Homme"> simple Homme</label>
+          <label class="chk"><input type="radio" name="badminton" value="Simple Femme"> simple Femme</label>
+        </div></fieldset>
+        <fieldset class="tabl" data-comp="PARABADMINTON" hidden><legend>PARABADMINTON *</legend><div class="opts">
+          <label class="chk"><input type="radio" name="parabadminton" value="Simple Femme"> simple Femme</label>
+          <label class="chk"><input type="radio" name="parabadminton" value="Simple Homme"> simple Homme</label>
+        </div></fieldset>
+        <fieldset class="tabl" data-comp="AIRBADMINTON" hidden><legend>AIRBADMINTON *</legend><div class="opts">
+          <label class="chk"><input type="checkbox" name="airbadminton" value="Double Homme"> Double Homme</label>
+          <label class="chk"><input type="checkbox" name="airbadminton" value="Double Femme"> Double Femme</label>
+          <label class="chk"><input type="checkbox" name="airbadminton" value="Double Mixte"> Double Mixte</label>
+        </div>
+        <label style="margin-top:14px">Le nom de ton coéquipier<small>AIRBADMINTON : nom du coéquipier en double et mixte</small><input name="partenaire"></label>
+        </fieldset>
+        <fieldset class="tabl"><legend>Catégorie *</legend><div class="opts col">
+          <label class="chk"><input type="radio" name="categorie" value="Seniors" required> Seniors : + 19 ans</label>
+          <label class="chk"><input type="radio" name="categorie" value="Juniors"> Juniors : 16 à 19 ans</label>
+          <label class="chk"><input type="radio" name="categorie" value="Cadets"> Cadets : 14 à 16 ans</label>
+          <label class="chk"><input type="radio" name="categorie" value="Benjamin"> Benjamin : - 14 ans</label>
+        </div></fieldset>
         <input name="site" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
         <button class="btn primary" type="submit">Valider mon inscription</button>
         <p class="msg" id="insc-msg" role="status"></p>
