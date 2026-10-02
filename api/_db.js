@@ -6,7 +6,12 @@ let pool, ready;
 
 export async function db() {
   if (!url) throw new Error("DATABASE_URL manquant");
-  pool ??= new pg.Pool({ connectionString: url, ssl: { rejectUnauthorized: false }, max: 1 });
+  if (!pool) {
+    // SSL géré ici (certificat vérifié) : on retire sslmode de l'URL pour éviter l'avertissement de pg
+    const u = new URL(url);
+    u.searchParams.delete("sslmode");
+    pool = new pg.Pool({ connectionString: u.toString(), ssl: { rejectUnauthorized: true }, max: 1 });
+  }
   ready ??= pool.query(`create table if not exists messages (
     id serial primary key,
     created_at timestamptz not null default now(),
