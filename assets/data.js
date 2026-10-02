@@ -5,7 +5,7 @@ window.SITE = {
   nom: "Bureau des Athlètes",
   sousTitre: "Badminton Côte d'Ivoire",
   email: "contact@exemple.ci",
-  telephone: "+225 00 00 00 00 00",
+  telephone: "+225 01 03 80 26 51",
   adresse: "Abidjan, Côte d'Ivoire",
   chiffres: [
     { valeur: "24", label: "Athlètes représentés" },

@@ -10,7 +10,7 @@
   $("#brand-name").textContent = S.nom;
   $("#hero-sub").textContent = `${S.nom} · ${S.sousTitre}`;
   $("#foot-txt").textContent = `© ${today.getFullYear()} ${S.nom} — ${S.sousTitre}`;
-  $("#contact-info").innerHTML = `${esc(S.email)}<br>${esc(S.telephone)}<br>${esc(S.adresse)}`;
+  $("#contact-info").innerHTML = `${esc(S.email)}<br><a href="tel:${esc(S.telephone.replace(/\s/g, ""))}">${esc(S.telephone)}</a><br>${esc(S.adresse)}`;
 
   // Accueil
   $("#stats").innerHTML = S.chiffres.map((c) => `<div class="stat"><b>${esc(c.valeur)}</b><span>${esc(c.label)}</span></div>`).join("");
