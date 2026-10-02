@@ -25,6 +25,25 @@
   const next = cal.find((e) => d(e.date) >= today);
   $("#home-next").innerHTML = next ? calItem(next) : `<p class="empty">Aucune compétition programmée.</p>`;
 
+  // Événement mis en avant
+  const E = S.evenement;
+  let eventHtml = "";
+  if (E) {
+    const open = d(E.limite) >= today;
+    eventHtml = `<article class="event">
+      <a class="event-img" href="${esc(E.affiche)}" target="_blank" rel="noopener"><img src="${esc(E.affiche)}" alt="Affiche : ${esc(E.titre)}" loading="lazy"></a>
+      <div class="event-body">
+        <p class="eyebrow">Événement</p>
+        <h2>${esc(E.titre)}</h2>
+        <p>${esc(E.accroche)}</p>
+        <ul class="event-facts"><li><b>Dates</b>${esc(E.dates)}</li><li><b>Lieu</b>${esc(E.lieu)}</li><li><b>Inscriptions</b>jusqu'au ${fmt(E.limite)}</li><li><b>Infoline</b><a href="tel:${esc(E.infoline.replace(/\s/g, ""))}">${esc(E.infoline)}</a></li></ul>
+        <div class="event-prog">${E.programme.map((p) => `<div><span class="date">${esc(p.jour)}</span><h3>${esc(p.discipline)}</h3><p>${p.tableaux.map(esc).join(" · ")}</p></div>`).join("")}</div>
+        <div class="btns left">${open ? `<a class="btn primary" href="${esc(E.inscription)}" target="_blank" rel="noopener">S'inscrire ›</a>` : `<span class="tag">Inscriptions closes</span>`}</div>
+      </div>
+    </article>`;
+  }
+  $("#home-event").innerHTML = eventHtml;
+
   // À propos
   $("#valeurs").innerHTML = S.valeurs.map((v) => `<div class="card"><h3>${esc(v.titre)}</h3><p>${esc(v.texte)}</p></div>`).join("");
   $("#bureau").innerHTML = S.bureau.map((m) => `<div class="card"><div class="avatar">${initials(m.nom)}</div><h3>${esc(m.nom)}</h3><p>${esc(m.role)}</p></div>`).join("");
@@ -47,7 +66,7 @@
   renderAthletes();
 
   // Actualités & calendrier
-  $("#news-list").innerHTML = news.map((n) => `<article class="card"><p class="date">${fmt(n.date)}</p><h3>${esc(n.titre)}</h3><p>${esc(n.texte)}</p></article>`).join("");
+  $("#news-list").innerHTML = eventHtml + news.map((n) => `<article class="card"><p class="date">${fmt(n.date)}</p><h3>${esc(n.titre)}</h3><p>${esc(n.texte)}</p></article>`).join("");
   $("#cal-list").innerHTML = cal.map(calItem).join("");
 
   // Formulaire : validation puis ouverture du client mail
