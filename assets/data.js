@@ -6,6 +6,7 @@ window.SITE = {
   sousTitre: "Badminton Côte d'Ivoire",
   email: "badmintonci@gmail.com",
   telephone: "+225 01 03 80 26 51",
+  telephone2: "+225 07 09 74 65 10",
   adresse: "Abidjan, Côte d'Ivoire",
   chiffres: [
     { valeur: "24", label: "Athlètes représentés" },
@@ -121,7 +122,7 @@ window.SITE = {
       dates: "Samedi 24 octobre 2026",
       lieu: "Hall 2 du Palais des Sports de Treichville",
       limite: "2026-10-17",
-      infoline: "07 09 74 65 10",
+      infoline: "+225 07 09 74 65 10",
       tarif: "20 000 FCFA par paire",
       programme: [
         {

@@ -36,7 +36,7 @@
   $("#foot-txt").textContent =
     `© ${today.getFullYear()} ${S.nom} — ${S.sousTitre}`;
   $("#contact-info").innerHTML =
-    `${esc(S.email)}<br><a href="tel:${esc(S.telephone.replace(/\s/g, ""))}">${esc(S.telephone)}</a><br>${esc(S.adresse)}`;
+    `${esc(S.email)}<br><a href="tel:${esc(S.telephone.replace(/\s/g, ""))}">${esc(S.telephone)}</a>${S.telephone2 ? "<br>" + `<a href="tel:${esc(S.telephone2.replace(/\s/g, ""))}">${esc(S.telephone2)}</a>` : ""}<br>${esc(S.adresse)}`;
 
   // Accueil
   $("#stats").innerHTML = S.chiffres
@@ -254,6 +254,7 @@
     const ouvert = d(O.limite) >= today;
     $("#open-titre").textContent = O.titre;
     $("#open-tarif").textContent = O.tarif;
+    $("#open-help").innerHTML = `Une question ? Appelle l'Infoline : <a href="tel:${esc(O.infoline.replace(/\s/g, ""))}">${esc(O.infoline)}</a>`;
     $("#open-info").textContent = ouvert
       ? `${O.dates} · ${O.lieu}. Inscriptions jusqu'au ${fmt(O.limite)}.`
       : "Les inscriptions sont closes.";

@@ -103,3 +103,4 @@ input:focus,select:focus,textarea:focus{border-color:var(--acc)}
 .tabl .form{gap:14px}
 .form label.chk{flex-direction:row;align-items:flex-start}
 input[type=file]{padding:10px}
+#open-help{font-size:14px;color:var(--mute);margin:0}#open-help a{color:var(--link,var(--acc))}
