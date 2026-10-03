@@ -10,7 +10,11 @@ export async function db() {
     // SSL géré ici (certificat vérifié) : on retire sslmode de l'URL pour éviter l'avertissement de pg
     const u = new URL(url);
     u.searchParams.delete("sslmode");
-    pool = new pg.Pool({ connectionString: u.toString(), ssl: { rejectUnauthorized: true }, max: 1 });
+    pool = new pg.Pool({
+      connectionString: u.toString(),
+      ssl: { rejectUnauthorized: true },
+      max: 1,
+    });
   }
   ready ??= pool.query(`create table if not exists messages (
     id serial primary key,
@@ -45,6 +49,9 @@ export async function db() {
       alter table inscriptions alter column email drop not null;
     end if;
   end $$`);
-  await ready.catch((e) => { ready = undefined; throw e; }); // réessaie au prochain appel en cas d'échec
+  await ready.catch((e) => {
+    ready = undefined;
+    throw e;
+  }); // réessaie au prochain appel en cas d'échec
   return pool;
 }

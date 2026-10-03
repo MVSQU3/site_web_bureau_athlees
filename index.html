@@ -1,173 +1,389 @@
 <!doctype html>
 <html lang="fr">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Bureau des Athlètes — Badminton Côte d'Ivoire</title>
-<meta name="description" content="Site officiel du Bureau des Athlètes ivoiriens de badminton.">
-<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
-<meta name="color-scheme" content="dark light">
-<link rel="icon" type="image/png" href="assets/img/favicon.png">
-<link rel="apple-touch-icon" href="assets/img/logo.png">
-<link rel="stylesheet" href="assets/style.css">
-</head>
-<body>
-<header class="nav">
-  <div class="nav-in">
-    <a href="#accueil" class="brand"><img class="logo" src="assets/img/logo.png" alt="Logo FIBAD – Commission des Athlètes" width="34" height="34"></a>
-    <div class="nav-r">
-    <button class="theme" id="theme" aria-label="Changer de thème"></button>
-    <button class="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span></button>
-    <nav class="links">
-      <a href="#accueil">Accueil</a>
-      <a href="#apropos">À propos</a>
-      <a href="#athletes">Athlètes</a>
-      <a href="#actualites">Actualités</a>
-      <a href="#calendrier">Calendrier</a>
-      <a href="#contact" class="cta">Contact</a>
-    </nav>
-    </div>
-  </div>
-</header>
-
-<main>
-  <section class="page" id="page-accueil">
-    <div class="hero">
-      <img class="hero-logo" src="assets/img/logo.png" alt="FIBAD – Commission des Athlètes" width="140" height="140">
-      <p class="eyebrow" id="hero-sub"></p>
-      <h1>La voix des athlètes.<br><span class="grad">Sur chaque volant.</span></h1>
-      <p class="lead">Nous représentons, accompagnons et faisons rayonner les joueuses et joueurs de badminton de Côte d'Ivoire.</p>
-      <div class="btns"><a class="btn primary" href="#athletes">Découvrir les athlètes</a><a class="btn ghost" href="#contact">Adhérer ›</a></div>
-    </div>
-    <div class="wrap"><div id="home-event"></div></div>
-    <div class="wrap stats" id="stats"></div>
-    <div class="wrap">
-      <h2 class="sec">À la une</h2>
-      <div class="grid3" id="home-news"></div>
-      <h2 class="sec">Prochaine compétition</h2>
-      <div id="home-next"></div>
-    </div>
-  </section>
-
-  <section class="page" id="page-apropos">
-    <div class="wrap">
-      <p class="eyebrow">À propos</p>
-      <h1 class="h1s">Par les athlètes,<br>pour les athlètes.</h1>
-      <p class="lead left">Le Bureau des Athlètes est l'instance qui défend les intérêts des sportifs de haut niveau du badminton ivoirien : conditions d'entraînement, sélection, suivi médical, reconversion.</p>
-      <div class="grid3" id="valeurs"></div>
-      <h2 class="sec">Bureau exécutif</h2>
-      <p class="lead left" style="margin-top:-12px">Bureau validé par la Direction Technique Nationale (DTN).</p>
-      <div class="grid4" id="bureau"></div>
-    </div>
-  </section>
-
-  <section class="page" id="page-athletes">
-    <div class="wrap">
-      <p class="eyebrow">Athlètes</p>
-      <h1 class="h1s">L'équipe.</h1>
-      <div class="toolbar">
-        <input id="search" type="search" placeholder="Rechercher un athlète ou un club">
-        <div class="seg" id="seg">
-          <button data-g="all" class="on">Tous</button><button data-g="F">Dames</button><button data-g="H">Hommes</button>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bureau des Athlètes — Badminton Côte d'Ivoire</title>
+    <meta
+      name="description"
+      content="Site officiel du Bureau des Athlètes ivoiriens de badminton."
+    />
+    <script>
+      try {
+        var t = localStorage.getItem("theme");
+        if (t) document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    </script>
+    <meta name="color-scheme" content="dark light" />
+    <link rel="icon" type="image/png" href="assets/img/favicon.png" />
+    <link rel="apple-touch-icon" href="assets/img/logo.png" />
+    <link rel="stylesheet" href="assets/style.css" />
+  </head>
+  <body>
+    <header class="nav">
+      <div class="nav-in">
+        <a href="#accueil" class="brand"
+          ><img
+            class="logo"
+            src="assets/img/logo.png"
+            alt="Logo FIBAD – Commission des Athlètes"
+            width="34"
+            height="34"
+        /></a>
+        <div class="nav-r">
+          <button
+            class="theme"
+            id="theme"
+            aria-label="Changer de thème"
+          ></button>
+          <button class="burger" aria-label="Menu" aria-expanded="false">
+            <span></span><span></span>
+          </button>
+          <nav class="links">
+            <a href="accueil">Accueil</a>
+            <a href="apropos">À propos</a>
+            <a href="athletes">Athlètes</a>
+            <a href="actualites">Actualités</a>
+            <a href="calendrier">Calendrier</a>
+            <a href="contact" class="cta">Contact</a>
+          </nav>
         </div>
       </div>
-      <div class="grid4" id="athletes-list"></div>
-      <p class="empty" id="athletes-empty" hidden>Aucun athlète ne correspond.</p>
-    </div>
-  </section>
+    </header>
 
-  <section class="page" id="page-actualites">
-    <div class="wrap">
-      <p class="eyebrow">Actualités</p>
-      <h1 class="h1s">Les dernières nouvelles.</h1>
-      <div class="list" id="news-list"></div>
-    </div>
-  </section>
-
-  <section class="page" id="page-calendrier">
-    <div class="wrap">
-      <p class="eyebrow">Calendrier</p>
-      <h1 class="h1s">Les compétitions.</h1>
-      <div class="list" id="cal-list"></div>
-    </div>
-  </section>
-
-  <section class="page" id="page-inscription">
-    <div class="wrap narrow">
-      <p class="eyebrow">Inscription</p>
-      <h1 class="h1s" id="insc-titre"></h1>
-      <p class="lead left" id="insc-info"></p>
-      <form id="insc-form" class="card form" novalidate>
-        <label>Nom et prénoms *<input name="nom" required autocomplete="name"></label>
-        <div class="row">
-          <label>Date de naissance *<input name="naissance" type="date" required></label>
-          <label>Téléphone (facultatif)<input name="telephone" type="tel" autocomplete="tel" placeholder="07 00 00 00 00"></label>
+    <main>
+      <section class="page" id="page-accueil">
+        <div class="hero">
+          <img
+            class="hero-logo"
+            src="assets/img/logo.png"
+            alt="FIBAD – Commission des Athlètes"
+            width="140"
+            height="140"
+          />
+          <p class="eyebrow" id="hero-sub"></p>
+          <h1>
+            La voix des athlètes.<br /><span class="grad"
+              >Sur chaque volant.</span
+            >
+          </h1>
+          <p class="lead">
+            Nous représentons, accompagnons et faisons rayonner les joueuses et
+            joueurs de badminton de Côte d'Ivoire.
+          </p>
+          <div class="btns">
+            <a class="btn primary" href="#athletes">Découvrir les athlètes</a
+            ><a class="btn ghost" href="#contact">Adhérer ›</a>
+          </div>
         </div>
-        <fieldset class="tabl"><legend>Sexe *</legend><div class="opts">
-          <label class="chk"><input type="radio" name="sexe" value="HOMME" required> HOMME</label>
-          <label class="chk"><input type="radio" name="sexe" value="FEMME"> FEMME</label>
-          <label class="chk"><input type="radio" name="sexe" value="Autre"> Autre :</label>
-          <input name="sexe_autre" class="inline" aria-label="Autre, préciser" disabled>
-        </div></fieldset>
-        <label>Club et ville d'origine *<input name="club" required></label>
-        <fieldset class="tabl"><legend>Licencié *</legend><div class="opts">
-          <label class="chk"><input type="radio" name="licencie" value="oui" required> oui</label>
-          <label class="chk"><input type="radio" name="licencie" value="non"> non</label>
-        </div></fieldset>
-        <fieldset class="tabl"><legend>Compétitions *</legend><div class="opts">
-          <label class="chk"><input type="checkbox" name="competitions" value="BADMINTON"> BADMINTON</label>
-          <label class="chk"><input type="checkbox" name="competitions" value="PARABADMINTON"> PARABADMINTON</label>
-          <label class="chk"><input type="checkbox" name="competitions" value="AIRBADMINTON"> AIRBADMINTON</label>
-        </div></fieldset>
-        <fieldset class="tabl" data-comp="BADMINTON" hidden><legend>BADMINTON *</legend><div class="opts">
-          <label class="chk"><input type="radio" name="badminton" value="Simple Homme"> simple Homme</label>
-          <label class="chk"><input type="radio" name="badminton" value="Simple Femme"> simple Femme</label>
-        </div></fieldset>
-        <fieldset class="tabl" data-comp="PARABADMINTON" hidden><legend>PARABADMINTON *</legend><div class="opts">
-          <label class="chk"><input type="radio" name="parabadminton" value="Simple Femme"> simple Femme</label>
-          <label class="chk"><input type="radio" name="parabadminton" value="Simple Homme"> simple Homme</label>
-        </div></fieldset>
-        <fieldset class="tabl" data-comp="AIRBADMINTON" hidden><legend>AIRBADMINTON *</legend><div class="opts">
-          <label class="chk"><input type="checkbox" name="airbadminton" value="Double Homme"> Double Homme</label>
-          <label class="chk"><input type="checkbox" name="airbadminton" value="Double Femme"> Double Femme</label>
-          <label class="chk"><input type="checkbox" name="airbadminton" value="Double Mixte"> Double Mixte</label>
+        <div class="wrap"><div id="home-event"></div></div>
+        <div class="wrap stats" id="stats"></div>
+        <div class="wrap">
+          <h2 class="sec">À la une</h2>
+          <div class="grid3" id="home-news"></div>
+          <h2 class="sec">Prochaine compétition</h2>
+          <div id="home-next"></div>
         </div>
-        <label style="margin-top:14px">Le nom de ton coéquipier<small>AIRBADMINTON : nom du coéquipier en double et mixte</small><input name="partenaire"></label>
-        </fieldset>
-        <fieldset class="tabl"><legend>Catégorie *</legend><div class="opts col">
-          <label class="chk"><input type="radio" name="categorie" value="Seniors" required> Seniors : + 19 ans</label>
-          <label class="chk"><input type="radio" name="categorie" value="Juniors"> Juniors : 16 à 19 ans</label>
-          <label class="chk"><input type="radio" name="categorie" value="Cadets"> Cadets : 14 à 16 ans</label>
-          <label class="chk"><input type="radio" name="categorie" value="Benjamin"> Benjamin : - 14 ans</label>
-        </div></fieldset>
-        <input name="site" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
-        <button class="btn primary" type="submit">Valider mon inscription</button>
-        <p class="msg" id="insc-msg" role="status"></p>
-      </form>
-    </div>
-  </section>
+      </section>
 
-  <section class="page" id="page-contact">
-    <div class="wrap narrow">
-      <p class="eyebrow">Contact & adhésion</p>
-      <h1 class="h1s">Parlons-en.</h1>
-      <p class="lead left" id="contact-info"></p>
-      <form id="form" class="card form" novalidate>
-        <div class="row"><label>Nom complet<input name="nom" required></label><label>E-mail<input name="email" type="email" required></label></div>
-        <label>Objet
-          <select name="objet"><option>Demande d'adhésion</option><option>Partenariat</option><option>Presse</option><option>Autre</option></select>
-        </label>
-        <input name="site" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
-        <label>Message<textarea name="message" rows="5" required></textarea></label>
-        <button class="btn primary" type="submit">Envoyer</button>
-        <p class="msg" id="form-msg" role="status"></p>
-      </form>
-    </div>
-  </section>
-</main>
+      <section class="page" id="page-apropos">
+        <div class="wrap">
+          <p class="eyebrow">À propos</p>
+          <h1 class="h1s">Par les athlètes,<br />pour les athlètes.</h1>
+          <p class="lead left">
+            Le Bureau des Athlètes est l'instance qui défend les intérêts des
+            sportifs de haut niveau du badminton ivoirien : conditions
+            d'entraînement, sélection, suivi médical, reconversion.
+          </p>
+          <div class="grid3" id="valeurs"></div>
+          <h2 class="sec">Bureau exécutif</h2>
+          <p class="lead left" style="margin-top: -12px">
+            Bureau validé par la Direction Technique Nationale (DTN).
+          </p>
+          <div class="grid4" id="bureau"></div>
+        </div>
+      </section>
 
-<footer class="foot"><div class="wrap"><span id="foot-txt"></span><span>Côte d'Ivoire 🇨🇮</span></div></footer>
-<script src="assets/data.js"></script>
-<script src="assets/app.js"></script>
-</body>
+      <section class="page" id="page-athletes">
+        <div class="wrap">
+          <p class="eyebrow">Athlètes</p>
+          <h1 class="h1s">L'équipe.</h1>
+          <div class="toolbar">
+            <input
+              id="search"
+              type="search"
+              placeholder="Rechercher un athlète ou un club"
+            />
+            <div class="seg" id="seg">
+              <button data-g="all" class="on">Tous</button
+              ><button data-g="F">Dames</button
+              ><button data-g="H">Hommes</button>
+            </div>
+          </div>
+          <div class="grid4" id="athletes-list"></div>
+          <p class="empty" id="athletes-empty" hidden>
+            Aucun athlète ne correspond.
+          </p>
+        </div>
+      </section>
+
+      <section class="page" id="page-actualites">
+        <div class="wrap">
+          <p class="eyebrow">Actualités</p>
+          <h1 class="h1s">Les dernières nouvelles.</h1>
+          <div class="list" id="news-list"></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-calendrier">
+        <div class="wrap">
+          <p class="eyebrow">Calendrier</p>
+          <h1 class="h1s">Les compétitions.</h1>
+          <div class="list" id="cal-list"></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-inscription">
+        <div class="wrap narrow">
+          <p class="eyebrow">Inscription</p>
+          <h1 class="h1s" id="insc-titre"></h1>
+          <p class="lead left" id="insc-info"></p>
+          <form id="insc-form" class="card form" novalidate>
+            <label
+              >Nom et prénoms *<input name="nom" required autocomplete="name"
+            /></label>
+            <div class="row">
+              <label
+                >Date de naissance *<input
+                  name="naissance"
+                  type="date"
+                  required
+              /></label>
+              <label
+                >Téléphone (facultatif)<input
+                  name="telephone"
+                  type="tel"
+                  autocomplete="tel"
+                  placeholder="07 00 00 00 00"
+              /></label>
+            </div>
+            <fieldset class="tabl">
+              <legend>Sexe *</legend>
+              <div class="opts">
+                <label class="chk"
+                  ><input type="radio" name="sexe" value="HOMME" required />
+                  HOMME</label
+                >
+                <label class="chk"
+                  ><input type="radio" name="sexe" value="FEMME" /> FEMME</label
+                >
+                <label class="chk"
+                  ><input type="radio" name="sexe" value="Autre" /> Autre
+                  :</label
+                >
+                <input
+                  name="sexe_autre"
+                  class="inline"
+                  aria-label="Autre, préciser"
+                  disabled
+                />
+              </div>
+            </fieldset>
+            <label
+              >Club et ville d'origine *<input name="club" required
+            /></label>
+            <fieldset class="tabl">
+              <legend>Licencié *</legend>
+              <div class="opts">
+                <label class="chk"
+                  ><input type="radio" name="licencie" value="oui" required />
+                  oui</label
+                >
+                <label class="chk"
+                  ><input type="radio" name="licencie" value="non" /> non</label
+                >
+              </div>
+            </fieldset>
+            <fieldset class="tabl">
+              <legend>Compétitions *</legend>
+              <div class="opts">
+                <label class="chk"
+                  ><input
+                    type="checkbox"
+                    name="competitions"
+                    value="BADMINTON"
+                  />
+                  BADMINTON</label
+                >
+                <label class="chk"
+                  ><input
+                    type="checkbox"
+                    name="competitions"
+                    value="PARABADMINTON"
+                  />
+                  PARABADMINTON</label
+                >
+                <label class="chk"
+                  ><input
+                    type="checkbox"
+                    name="competitions"
+                    value="AIRBADMINTON"
+                  />
+                  AIRBADMINTON</label
+                >
+              </div>
+            </fieldset>
+            <fieldset class="tabl" data-comp="BADMINTON" hidden>
+              <legend>BADMINTON *</legend>
+              <div class="opts">
+                <label class="chk"
+                  ><input type="radio" name="badminton" value="Simple Homme" />
+                  simple Homme</label
+                >
+                <label class="chk"
+                  ><input type="radio" name="badminton" value="Simple Femme" />
+                  simple Femme</label
+                >
+              </div>
+            </fieldset>
+            <fieldset class="tabl" data-comp="PARABADMINTON" hidden>
+              <legend>PARABADMINTON *</legend>
+              <div class="opts">
+                <label class="chk"
+                  ><input
+                    type="radio"
+                    name="parabadminton"
+                    value="Simple Femme"
+                  />
+                  simple Femme</label
+                >
+                <label class="chk"
+                  ><input
+                    type="radio"
+                    name="parabadminton"
+                    value="Simple Homme"
+                  />
+                  simple Homme</label
+                >
+              </div>
+            </fieldset>
+            <fieldset class="tabl" data-comp="AIRBADMINTON" hidden>
+              <legend>AIRBADMINTON *</legend>
+              <div class="opts">
+                <label class="chk"
+                  ><input
+                    type="checkbox"
+                    name="airbadminton"
+                    value="Double Homme"
+                  />
+                  Double Homme</label
+                >
+                <label class="chk"
+                  ><input
+                    type="checkbox"
+                    name="airbadminton"
+                    value="Double Femme"
+                  />
+                  Double Femme</label
+                >
+                <label class="chk"
+                  ><input
+                    type="checkbox"
+                    name="airbadminton"
+                    value="Double Mixte"
+                  />
+                  Double Mixte</label
+                >
+              </div>
+              <label style="margin-top: 14px"
+                >Le nom de ton coéquipier<small
+                  >AIRBADMINTON : nom du coéquipier en double et mixte</small
+                ><input name="partenaire"
+              /></label>
+            </fieldset>
+            <fieldset class="tabl">
+              <legend>Catégorie *</legend>
+              <div class="opts col">
+                <label class="chk"
+                  ><input
+                    type="radio"
+                    name="categorie"
+                    value="Seniors"
+                    required
+                  />
+                  Seniors : + 19 ans</label
+                >
+                <label class="chk"
+                  ><input type="radio" name="categorie" value="Juniors" />
+                  Juniors : 16 à 19 ans</label
+                >
+                <label class="chk"
+                  ><input type="radio" name="categorie" value="Cadets" /> Cadets
+                  : 14 à 16 ans</label
+                >
+                <label class="chk"
+                  ><input type="radio" name="categorie" value="Benjamin" />
+                  Benjamin : - 14 ans</label
+                >
+              </div>
+            </fieldset>
+            <input
+              name="site"
+              tabindex="-1"
+              autocomplete="off"
+              aria-hidden="true"
+              style="position: absolute; left: -9999px"
+            />
+            <button class="btn primary" type="submit">
+              Valider mon inscription
+            </button>
+            <p class="msg" id="insc-msg" role="status"></p>
+          </form>
+        </div>
+      </section>
+
+      <section class="page" id="page-contact">
+        <div class="wrap narrow">
+          <p class="eyebrow">Contact & adhésion</p>
+          <h1 class="h1s">Parlons-en.</h1>
+          <p class="lead left" id="contact-info"></p>
+          <form id="form" class="card form" novalidate>
+            <div class="row">
+              <label>Nom complet<input name="nom" required /></label
+              ><label>E-mail<input name="email" type="email" required /></label>
+            </div>
+            <label
+              >Objet
+              <select name="objet">
+                <option>Demande d'adhésion</option>
+                <option>Partenariat</option>
+                <option>Presse</option>
+                <option>Autre</option>
+              </select>
+            </label>
+            <input
+              name="site"
+              tabindex="-1"
+              autocomplete="off"
+              aria-hidden="true"
+              style="position: absolute; left: -9999px"
+            />
+            <label
+              >Message<textarea name="message" rows="5" required></textarea>
+            </label>
+            <button class="btn primary" type="submit">Envoyer</button>
+            <p class="msg" id="form-msg" role="status"></p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <div class="wrap">
+        <span id="foot-txt"></span><span>Côte d'Ivoire 🇨🇮</span>
+      </div>
+    </footer>
+    <script src="assets/data.js"></script>
+    <script src="assets/app.js"></script>
+  </body>
 </html>
