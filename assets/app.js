@@ -59,23 +59,24 @@
     ? calItem(next)
     : `<p class="empty">Aucune compétition programmée.</p>`;
 
-  // Événement mis en avant
-  const E = S.evenement;
-  let eventHtml = "";
-  if (E) {
+  // Événements mis en avant
+  const EVTS = [...(S.evenements || [])].sort((x, y) => x.debut.localeCompare(y.debut));
+  const evt = (id) => EVTS.find((x) => x.id === id);
+  const eventCard = (E) => {
     const open = d(E.limite) >= today;
-    eventHtml = `<article class="event">
+    return `<article class="event">
       <a class="event-img" href="${esc(E.affiche)}" target="_blank" rel="noopener"><img src="${esc(E.affiche)}" alt="Affiche : ${esc(E.titre)}" loading="lazy"></a>
       <div class="event-body">
         <p class="eyebrow">Événement</p>
         <h2>${esc(E.titre)}</h2>
         <p>${esc(E.accroche)}</p>
-        <ul class="event-facts"><li><b>Dates</b>${esc(E.dates)}</li><li><b>Lieu</b>${esc(E.lieu)}</li><li><b>Inscriptions</b>jusqu'au ${fmt(E.limite)}</li><li><b>Infoline</b><a href="tel:${esc(E.infoline.replace(/\s/g, ""))}">${esc(E.infoline)}</a></li></ul>
+        <ul class="event-facts"><li><b>Dates</b>${esc(E.dates)}</li><li><b>Lieu</b>${esc(E.lieu)}</li>${E.tarif ? `<li><b>Participation</b>${esc(E.tarif)}</li>` : ""}<li><b>Inscriptions</b>jusqu'au ${fmt(E.limite)}</li><li><b>Infoline</b><a href="tel:${esc(E.infoline.replace(/\s/g, ""))}">${esc(E.infoline)}</a></li></ul>
         <div class="event-prog">${E.programme.map((p) => `<div><span class="date">${esc(p.jour)}</span><h3>${esc(p.discipline)}</h3><p>${p.tableaux.map(esc).join(" · ")}</p></div>`).join("")}</div>
-        <div class="btns left">${open ? `<a class="btn primary" href="#inscription">S'inscrire ›</a>` : `<span class="tag">Inscriptions closes</span>`}</div>
+        <div class="btns left">${open ? `<a class="btn primary" href="${esc(E.href)}">S'inscrire ›</a>` : `<span class="tag">Inscriptions closes</span>`}</div>
       </div>
     </article>`;
-  }
+  };
+  const eventHtml = EVTS.map(eventCard).join("");
   $("#home-event").innerHTML = eventHtml;
 
   // À propos
@@ -168,7 +169,8 @@
     }
   });
 
-  // Inscription à l'événement
+  // Inscription au Championnat
+  const E = evt("championnat");
   if (E) {
     const open = d(E.limite) >= today;
     $("#insc-titre").textContent = E.titre;
@@ -246,6 +248,58 @@
     });
   }
 
+  // Inscription à l'Open de l'amitié (paire, paiement, preuve)
+  const O = evt("open");
+  if (O) {
+    const ouvert = d(O.limite) >= today;
+    $("#open-titre").textContent = O.titre;
+    $("#open-tarif").textContent = O.tarif;
+    $("#open-info").textContent = ouvert
+      ? `${O.dates} · ${O.lieu}. Inscriptions jusqu'au ${fmt(O.limite)}.`
+      : "Les inscriptions sont closes.";
+    const f = $("#open-form"), msg = $("#open-msg");
+    f.hidden = !ouvert;
+    const wave = () => f.paiement.value.startsWith("Mobile");
+    f.addEventListener("change", () => { $("#open-preuve").hidden = !wave(); });
+    // Image : réduite et compressée (JPEG) ; PDF : envoyé tel quel (2 Mo max)
+    const lire = (file) => new Promise((ok, ko) => {
+      const fr = new FileReader();
+      fr.onerror = () => ko(new Error("Fichier illisible"));
+      fr.onload = () => {
+        if (file.type === "application/pdf") return file.size <= 2e6 ? ok(fr.result) : ko(new Error("PDF trop lourd (2 Mo max)"));
+        const img = new Image();
+        img.onerror = () => ko(new Error("Image illisible"));
+        img.onload = () => {
+          const k = Math.min(1, 1400 / Math.max(img.width, img.height));
+          const c = document.createElement("canvas");
+          c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+          c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+          ok(c.toDataURL("image/jpeg", 0.8));
+        };
+        img.src = fr.result;
+      };
+      fr.readAsDataURL(file);
+    });
+    f.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const fichier = f.preuve.files[0];
+      if (!f.checkValidity() || (wave() && !fichier)) { msg.className = "msg err"; msg.textContent = "Merci de répondre à toutes les questions obligatoires (*)" + (wave() && !fichier ? ", dont la preuve de paiement." : "."); return; }
+      const btn = f.querySelector("button[type=submit]"); btn.disabled = true; msg.className = "msg"; msg.textContent = "Envoi…";
+      try {
+        const data = Object.fromEntries(new FormData(f));
+        delete data.preuve; data.accepte = f.accepte.checked;
+        if (wave()) data.preuve = await lire(fichier);
+        const r = await fetch("/api/open", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+        const j = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(j.error || "Erreur");
+        msg.className = "msg ok"; msg.textContent = `Merci ! L'inscription de la paire est enregistrée. Infoline : ${O.infoline}.`;
+        f.reset(); $("#open-preuve").hidden = true;
+      } catch (err) {
+        msg.className = "msg err"; msg.textContent = `Échec de l'envoi (${err.message}). Réessaie ou appelle l'Infoline : ${O.infoline}.`;
+      } finally { btn.disabled = false; }
+    });
+  }
+
   // Thème clair / sombre
   const sun =
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
@@ -274,6 +328,7 @@
     "calendrier",
     "contact",
     "inscription",
+    "open",
   ];
   const burger = $(".burger"),
     links = $(".links");

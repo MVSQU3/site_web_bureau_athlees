@@ -105,6 +105,9 @@
         padding: 2px 10px;
         margin-left: 6px;
       }
+      .row > button {
+        align-self: flex-start;
+      }
       .tabs {
         display: flex;
         gap: 6px;
@@ -170,6 +173,7 @@
         <div class="bar">
           <div class="tabs" id="tabs">
             <button data-t="inscriptions" class="on">Inscriptions</button
+            ><button data-t="open">Open de l'amitié</button
             ><button data-t="messages">Messages</button>
           </div>
           <select id="filtre" hidden></select
@@ -218,7 +222,7 @@
         const list = visible();
         $("#count").textContent =
           list.length +
-          (tab === "inscriptions" ? " inscription(s)" : " message(s)");
+          (tab === "messages" ? " message(s)" : " inscription(s)");
         if (tab === "messages") {
           $("#stats").innerHTML = "";
           $("#list").innerHTML =
@@ -228,6 +232,25 @@
                   `<div class="m"><div class="row"><div><h3>${esc(m.nom)}<span class="tag">${esc(m.objet)}</span></h3><div class="meta"><a href="mailto:${esc(m.email)}">${esc(m.email)}</a> · ${dt(m.created_at)}</div></div>${del(m.id)}</div><p>${esc(m.message)}</p></div>`,
               )
               .join("") || '<p class="meta">Aucun message pour le moment.</p>';
+          return;
+        }
+        if (tab === "open") {
+          const payes = rows.filter((r) => r.paye).length;
+          $("#stats").innerHTML =
+            `<span class="tag">Paires : <b>${rows.length}</b></span><span class="tag">Paiement confirmé : <b>${payes}</b></span><span class="tag">À vérifier : <b>${rows.length - payes}</b></span><span class="tag">Attendu : <b>${(rows.length * 20000).toLocaleString("fr-FR")} FCFA</b></span>`;
+          const joueur = (n, nom, nais, tel, club) =>
+            `<div class="meta"><b>${n}</b> ${esc(nom)} · né(e) le ${day(nais)} · ${esc(club)} · <a href="tel:${esc(tel.replace(/\s/g, ""))}">${esc(tel)}</a></div>`;
+          $("#list").innerHTML =
+            list
+              .map(
+                (r) => `<div class="m"><div class="row"><div><h3>${esc(r.j1_nom)} &amp; ${esc(r.j2_nom)}<span class="tag">${esc(r.categorie)}</span>${r.paire ? `<span class="tag">${esc(r.paire)}</span>` : ""}</h3>
+    ${joueur("Joueur 1 :", r.j1_nom, r.j1_naissance, r.j1_tel, r.j1_club)}
+    ${joueur("Joueur 2 :", r.j2_nom, r.j2_naissance, r.j2_tel, r.j2_club)}
+    <div class="meta">Inscrits le ${dt(r.created_at)} · Paiement : ${esc(r.paiement)}</div>
+    <div class="chips"><button class="ghost" data-pay="${r.id}" data-v="${r.paye ? 0 : 1}">${r.paye ? "✓ Paiement confirmé (annuler)" : "Confirmer le paiement"}</button>${r.has_preuve ? `<button class="ghost" data-view="${r.id}">Voir la preuve</button>` : ""}</div></div>${del(r.id)}</div></div>`,
+              )
+              .join("") ||
+            '<p class="meta">Aucune inscription pour le moment.</p>';
           return;
         }
         const counts = {};
@@ -265,7 +288,7 @@
           return;
         }
         sessionStorage.setItem("pw", pw);
-        rows = (await r.json())[tab];
+        rows = Object.values(await r.json())[0];
         $("#login").hidden = true;
         $("#app").hidden = false;
         const tabl = [...new Set(rows.flatMap((x) => x.tableaux || []))].sort();
@@ -303,7 +326,22 @@
       };
       $("#filtre").onchange = render;
       $("#list").onclick = async (e) => {
-        const id = e.target.dataset.id;
+        const t = e.target.dataset;
+        if (t.pay) {
+          await api("&id=" + t.pay + "&paye=" + t.v, { method: "PATCH" });
+          return load();
+        }
+        if (t.view) {
+          const w = window.open("", "_blank");
+          const r = await api("&preuve=1&id=" + t.view);
+          const { preuve } = await r.json();
+          if (!preuve) return w.close();
+          fetch(preuve)
+            .then((x) => x.blob())
+            .then((b) => (w.location = URL.createObjectURL(b)));
+          return;
+        }
+        const id = t.id;
         if (id && confirm("Supprimer définitivement ?")) {
           await api("&id=" + id, { method: "DELETE" });
           load();
@@ -313,7 +351,30 @@
         const q = (v) => '"' + String(v ?? "").replace(/"/g, '""') + '"';
         const list = visible();
         const csv =
-          tab === "messages"
+          tab === "open"
+            ? "Date inscription;Catégorie;Nom de la paire;J1 nom;J1 naissance;J1 téléphone;J1 club;J2 nom;J2 naissance;J2 téléphone;J2 club;Paiement;Paiement confirmé\n" +
+              list
+                .map((r) =>
+                  [
+                    dt(r.created_at),
+                    r.categorie,
+                    r.paire,
+                    r.j1_nom,
+                    day(r.j1_naissance),
+                    r.j1_tel,
+                    r.j1_club,
+                    r.j2_nom,
+                    day(r.j2_naissance),
+                    r.j2_tel,
+                    r.j2_club,
+                    r.paiement,
+                    r.paye ? "oui" : "non",
+                  ]
+                    .map(q)
+                    .join(";"),
+                )
+                .join("\n")
+            : tab === "messages"
             ? "Date;Nom;E-mail;Objet;Message\n" +
               list
                 .map((m) =>

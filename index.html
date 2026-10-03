@@ -143,6 +143,61 @@
         </div>
       </section>
 
+      <section class="page" id="page-open">
+        <div class="wrap narrow">
+          <p class="eyebrow">Inscription</p>
+          <h1 class="h1s" id="open-titre"></h1>
+          <p class="lead left" id="open-info"></p>
+          <form id="open-form" class="card form" novalidate>
+            <fieldset class="tabl">
+              <legend>Catégorie *</legend>
+              <div class="opts">
+                <label class="chk"><input type="radio" name="categorie" value="Double Hommes" required /> Double Hommes</label>
+                <label class="chk"><input type="radio" name="categorie" value="Double Mixte" /> Double Mixte</label>
+              </div>
+            </fieldset>
+            <fieldset class="tabl">
+              <legend>Joueur 1 *</legend>
+              <div class="form">
+                <label>Nom et prénom<input name="j1_nom" required autocomplete="name" /></label>
+                <div class="row">
+                  <label>Date de naissance<input name="j1_naissance" type="date" required /></label>
+                  <label>Téléphone / WhatsApp<input name="j1_tel" type="tel" required autocomplete="tel" /></label>
+                </div>
+                <label>Club<input name="j1_club" required /></label>
+              </div>
+            </fieldset>
+            <fieldset class="tabl">
+              <legend>Joueur 2 *</legend>
+              <div class="form">
+                <label>Nom et prénom<input name="j2_nom" required /></label>
+                <div class="row">
+                  <label>Date de naissance<input name="j2_naissance" type="date" required /></label>
+                  <label>Téléphone / WhatsApp<input name="j2_tel" type="tel" required /></label>
+                </div>
+                <label>Club ou structure<input name="j2_club" required /></label>
+              </div>
+            </fieldset>
+            <label>Nom de la paire (facultatif)<input name="paire" /></label>
+            <fieldset class="tabl">
+              <legend>Paiement : <span id="open-tarif"></span> *</legend>
+              <div class="opts">
+                <label class="chk"><input type="radio" name="paiement" value="Espèces" required /> Espèces</label>
+                <label class="chk"><input type="radio" name="paiement" value="Mobile Money (Wave)" /> Mobile Money (Wave)</label>
+              </div>
+              <label id="open-preuve" hidden style="margin-top: 14px">
+                Preuve de paiement (capture d'écran ou reçu) *
+                <input name="preuve" type="file" accept="image/*,application/pdf" />
+              </label>
+            </fieldset>
+            <label class="chk"><input type="checkbox" name="accepte" required /> Je confirme l'exactitude des informations fournies et j'accepte les conditions de participation à l'Open de l'amitié – 2e édition. *</label>
+            <input name="site" tabindex="-1" autocomplete="off" aria-hidden="true" style="position: absolute; left: -9999px" />
+            <button class="btn primary" type="submit">Valider l'inscription de la paire</button>
+            <p class="msg" id="open-msg" role="status"></p>
+          </form>
+        </div>
+      </section>
+
       <section class="page" id="page-inscription">
         <div class="wrap narrow">
           <p class="eyebrow">Inscription</p>

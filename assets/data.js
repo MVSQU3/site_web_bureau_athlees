@@ -108,8 +108,33 @@ window.SITE = {
       club: "Club Korhogo",
     },
   ],
-  // Événement mis en avant (Accueil + Actualités). Mettre à null pour le retirer.
-  evenement: {
+  // Événements mis en avant (Accueil + Actualités), du plus proche au plus lointain.
+  evenements: [
+    {
+      id: "open",
+      debut: "2026-10-24",
+      href: "#open",
+      titre: "Open de l'amitié 2026 – 2e édition",
+      affiche: "assets/img/open-amitie-2026.jpg",
+      accroche:
+        "Le badminton unit les cultures et renforce l'amitié ! Ouvert aux Ivoiriens et aux expatriés : chinois, indiens, français, malaisiens, japonais, etc. Viens taper dans le volant !",
+      dates: "Samedi 24 octobre 2026",
+      lieu: "Hall 2 du Palais des Sports de Treichville",
+      limite: "2026-10-17",
+      infoline: "07 09 74 65 10",
+      tarif: "20 000 FCFA par paire",
+      programme: [
+        {
+          jour: "24 octobre",
+          discipline: "Doubles",
+          tableaux: ["Double Hommes", "Double Mixte"],
+        },
+      ],
+    },
+    {
+      id: "championnat",
+      debut: "2026-10-29",
+      href: "#inscription",
     titre: "Championnat National de Badminton 2026",
     affiche: "assets/img/championnat-2026.jpg",
     accroche:
@@ -137,8 +162,15 @@ window.SITE = {
         tableaux: ["Simple Hommes", "Simple Dames"],
       },
     ],
-  },
+    },
+  ],
   actualites: [
+    {
+      date: "2026-10-03",
+      titre: "Open de l'amitié 2026 : inscriptions ouvertes",
+      texte:
+        "2e édition le samedi 24 octobre au Hall 2 du Palais des Sports de Treichville. Doubles hommes et doubles mixtes, 20 000 FCFA par paire. Inscriptions jusqu'au 17 octobre.",
+    },
     {
       date: "2026-10-02",
       titre: "Championnat National 2026 : inscriptions ouvertes",
@@ -165,6 +197,11 @@ window.SITE = {
     },
   ],
   calendrier: [
+    {
+      date: "2026-10-24",
+      titre: "Open de l'amitié – 2e édition (doubles hommes et mixtes)",
+      lieu: "Hall 2 – Palais des Sports de Treichville",
+    },
     {
       date: "2026-10-17",
       titre: "Date limite d'inscription – Championnat National",

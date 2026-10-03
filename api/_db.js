@@ -48,7 +48,24 @@ export async function db() {
       alter table inscriptions alter column prenom drop not null;
       alter table inscriptions alter column email drop not null;
     end if;
-  end $$`);
+  end $$;
+  create table if not exists open_inscriptions (
+    id serial primary key,
+    created_at timestamptz not null default now(),
+    categorie text not null,
+    j1_nom text not null,
+    j1_naissance date not null,
+    j1_tel text not null,
+    j1_club text not null,
+    j2_nom text not null,
+    j2_naissance date not null,
+    j2_tel text not null,
+    j2_club text not null,
+    paire text not null default '',
+    paiement text not null,
+    preuve text,
+    paye boolean not null default false
+  )`);
   await ready.catch((e) => {
     ready = undefined;
     throw e;
