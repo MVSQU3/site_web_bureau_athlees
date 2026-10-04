@@ -1,3 +1,4 @@
+import { Trash2, KeyRound } from "lucide-react";
 import { q } from "@/lib/db";
 import { requireUser } from "@/lib/auth";
 import { fmtDate } from "@/lib/util";
@@ -9,17 +10,21 @@ export default async function Users() {
   const rows = await q("select id, email, name, role, created_at from users order by created_at");
   return (
     <>
-      <h1>Utilisateurs</h1>
-      <p className="sub-h">Les personnes qui peuvent se connecter au back office.</p>
-      {rows.map((u: any) => (
-        <div className="acard arow" key={u.id}>
-          <div><b>{u.name || u.email}</b> <span className={"chip " + (u.role === "admin" ? "ok" : "")}>{u.role === "admin" ? "Administrateur" : "Éditeur"}</span><div className="meta">{u.email} · créé le {fmtDate(u.created_at)}</div></div>
-          <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-            <form action={resetPassword.bind(null, u.id)} style={{ display: "flex", gap: 6 }}><input name="password" type="password" minLength={8} placeholder="Nouveau mot de passe" style={{ width: 190, padding: "6px 10px", fontSize: 14 }} required /><button className="abtn ghost sm">Changer</button></form>
-            {u.id !== me.id && <form action={deleteUser.bind(null, u.id)}><button className="abtn danger sm">Supprimer</button></form>}
+      <h1 className="text-3xl font-bold tracking-tight">Utilisateurs</h1>
+      <p className="mb-6 mt-1 text-base-content/60">Les personnes qui peuvent se connecter au back office.</p>
+      <div className="space-y-3">
+        {rows.map((u: any) => (
+          <div className="card bg-base-200" key={u.id}>
+            <div className="card-body flex-row flex-wrap items-center justify-between gap-4 py-4">
+              <div><div className="flex items-center gap-2"><b>{u.name || u.email}</b><span className={"badge " + (u.role === "admin" ? "badge-success" : "badge-neutral")}>{u.role === "admin" ? "Administrateur" : "Éditeur"}</span></div><div className="text-sm text-base-content/60">{u.email} · créé le {fmtDate(u.created_at)}</div></div>
+              <div className="flex flex-wrap items-center gap-2">
+                <form action={resetPassword.bind(null, u.id)} className="join"><input className="input input-sm join-item w-48" name="password" type="password" minLength={8} placeholder="Nouveau mot de passe" required autoComplete="new-password" /><button className="btn btn-sm join-item"><KeyRound size={14} />Changer</button></form>
+                {u.id !== me.id && <form action={deleteUser.bind(null, u.id)}><button className="btn btn-ghost btn-sm text-error"><Trash2 size={14} />Supprimer</button></form>}
+              </div>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
       <UserForm />
     </>
   );

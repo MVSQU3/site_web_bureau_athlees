@@ -14,7 +14,7 @@ export default async function EditEvent({ params }: { params: Promise<{ id: stri
   if (!ev) notFound();
   return (
     <>
-      <div className="adm-bar"><h1>{isNew ? "Nouvel événement" : "Modifier l'événement"}</h1></div>
+      <h1 className="mb-6 text-3xl font-bold tracking-tight">{isNew ? "Nouvel événement" : "Modifier l'événement"}</h1>
       <EventEditor ev={ev} action={saveEvent.bind(null, isNew ? null : ev.id)} onDelete={!isNew && u.role === "admin" ? deleteEvent.bind(null, ev.id) as any : null} />
     </>
   );

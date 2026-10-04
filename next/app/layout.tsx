@@ -7,13 +7,14 @@ export const metadata: Metadata = {
   icons: { icon: "/icon.png", apple: "/logo.png" },
 };
 
-const themeScript = `try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}`;
+// Applique le thème mémorisé avant l'affichage (évite le flash)
+const themeScript = `try{var t=localStorage.getItem("theme");document.documentElement.dataset.theme=t==="light"?"fibad-light":"fibad-dark"}catch(e){}`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" suppressHydrationWarning>
+    <html lang="fr" data-theme="fibad-dark" suppressHydrationWarning>
       <head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head>
-      <body>{children}</body>
+      <body className="min-h-screen bg-base-100 font-sans text-base-content">{children}</body>
     </html>
   );
 }

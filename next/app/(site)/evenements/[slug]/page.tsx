@@ -14,12 +14,12 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
   if (!e) notFound();
   const open = eventStatus(e) === "open";
   return (
-    <div className="page"><div className="wrap">
+    <div className="mx-auto max-w-6xl px-4 py-12">
       <EventCard e={e} detail />
-      <div className="narrow" style={{ margin: "0 auto" }} id="inscription">
-        <h2 className="sec" style={{ marginTop: 24 }}>Inscription</h2>
-        {open ? <RegistrationForm slug={e.slug} fields={e.form} infoline={e.infoline} /> : <p className="empty">Les inscriptions sont closes.</p>}
+      <div className="mx-auto mt-12 max-w-3xl scroll-mt-24" id="inscription">
+        <h2 className="mb-6 text-3xl font-bold tracking-tight">Inscription</h2>
+        {open ? <RegistrationForm slug={e.slug} fields={e.form} infoline={e.infoline} /> : <p className="py-10 text-center text-base-content/60">Les inscriptions sont closes.</p>}
       </div>
-    </div></div>
+    </div>
   );
 }

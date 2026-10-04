@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
+import { CheckCircle2, Send } from "lucide-react";
 import { isVisible, validate, FILE_MAX, type Field } from "@/lib/forms";
+import { Field as Lbl, Group, Alert } from "./ui";
 
 type Vals = Record<string, any>;
 
@@ -28,50 +30,50 @@ export default function RegistrationForm({ slug, fields, infoline }: { slug: str
   const [done, setDone] = useState(false);
 
   const set = (k: string, v: any) => setVals((p) => ({ ...p, [k]: v }));
-  const label = (f: Field) => <>{f.label}{f.required && f.type !== "consent" && <span className="req"> *</span>}</>;
+  const optCls = "label cursor-pointer justify-start gap-2 text-base text-base-content";
+  const inCls = "input w-full text-base";
 
   function renderField(f: Field) {
     const k = f.key;
     switch (f.type) {
       case "section":
-        return <div key={k}><h3 className="sub">{f.label}</h3>{f.help && <p className="help">{f.help}</p>}</div>;
+        return <div key={k} className="pt-4"><h3 className="text-xl font-semibold tracking-tight">{f.label}</h3>{f.help && <p className="mt-1 text-sm text-base-content/60">{f.help}</p>}</div>;
       case "textarea":
-        return <label key={k}>{label(f)}<textarea name={k} rows={4} value={vals[k] ?? ""} onChange={(e) => set(k, e.target.value)} />{f.help && <small>{f.help}</small>}</label>;
+        return <Lbl key={k} label={f.label} required={f.required} help={f.help}><textarea name={k} className="textarea h-28 w-full text-base" value={vals[k] ?? ""} onChange={(e) => set(k, e.target.value)} /></Lbl>;
       case "select":
-        return <label key={k}>{label(f)}<select name={k} value={vals[k] ?? ""} onChange={(e) => set(k, e.target.value)}><option value="">Choisir…</option>{(f.options || []).map((o) => <option key={o}>{o}</option>)}</select></label>;
+        return <Lbl key={k} label={f.label} required={f.required}><select name={k} className="select w-full text-base" value={vals[k] ?? ""} onChange={(e) => set(k, e.target.value)}><option value="">Choisir…</option>{(f.options || []).map((o) => <option key={o}>{o}</option>)}</select></Lbl>;
       case "radio":
         return (
-          <fieldset className="tabl" key={k}><legend>{label(f)}</legend>
-            {f.help && <p className="help">{f.help}</p>}
-            <div className="opts">
-              {(f.options || []).map((o) => <label className="chk" key={o}><input type="radio" name={k} value={o} checked={vals[k] === o} onChange={() => { setOtherOn((p) => ({ ...p, [k]: false })); set(k, o); }} /> {o}</label>)}
+          <Group key={k} legend={f.label} required={f.required} help={f.help}>
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-1">
+              {(f.options || []).map((o) => <label className={optCls} key={o}><input type="radio" className="radio radio-primary radio-sm" name={k} value={o} checked={vals[k] === o} onChange={() => { setOtherOn((p) => ({ ...p, [k]: false })); set(k, o); }} /> {o}</label>)}
               {f.other && <>
-                <label className="chk"><input type="radio" name={k} checked={!!otherOn[k]} onChange={() => { setOtherOn((p) => ({ ...p, [k]: true })); set(k, other[k] ? `Autre : ${other[k]}` : ""); }} /> Autre :</label>
-                <input className="inline" aria-label="Autre" disabled={!otherOn[k]} value={other[k] ?? ""} onChange={(e) => { setOther((p) => ({ ...p, [k]: e.target.value })); set(k, e.target.value.trim() ? `Autre : ${e.target.value.trim()}` : ""); }} />
+                <label className={optCls}><input type="radio" className="radio radio-primary radio-sm" name={k} checked={!!otherOn[k]} onChange={() => { setOtherOn((p) => ({ ...p, [k]: true })); set(k, other[k] ? `Autre : ${other[k]}` : ""); }} /> Autre :</label>
+                <input className="input input-sm min-w-40 flex-1" aria-label="Autre" disabled={!otherOn[k]} value={other[k] ?? ""} onChange={(e) => { setOther((p) => ({ ...p, [k]: e.target.value })); set(k, e.target.value.trim() ? `Autre : ${e.target.value.trim()}` : ""); }} />
               </>}
             </div>
-          </fieldset>
+          </Group>
         );
       case "checkbox": {
         const cur: string[] = vals[k] || [];
         const toggle = (o: string, on: boolean) => set(k, on ? [...cur, o] : cur.filter((x) => x !== o));
+        const strip = cur.filter((x) => !x.startsWith("Autre : "));
         return (
-          <fieldset className="tabl" key={k}><legend>{label(f)}</legend>
-            {f.help && <p className="help">{f.help}</p>}
-            <div className="opts col">
-              {(f.options || []).map((o) => <label className="chk" key={o}><input type="checkbox" name={k} value={o} checked={cur.includes(o)} onChange={(e) => toggle(o, e.target.checked)} /> {o}</label>)}
-              {f.other && <div className="opts">
-                <label className="chk"><input type="checkbox" checked={!!otherOn[k]} onChange={(e) => { setOtherOn((p) => ({ ...p, [k]: e.target.checked })); set(k, e.target.checked ? (other[k]?.trim() ? [...cur.filter((x) => !x.startsWith("Autre : ")), `Autre : ${other[k].trim()}`] : cur) : cur.filter((x) => !x.startsWith("Autre : "))); }} /> Autre :</label>
-                <input className="inline" aria-label="Autre" disabled={!otherOn[k]} value={other[k] ?? ""} onChange={(e) => { const t = e.target.value; setOther((p) => ({ ...p, [k]: t })); set(k, [...cur.filter((x) => !x.startsWith("Autre : ")), ...(t.trim() ? [`Autre : ${t.trim()}`] : [])]); }} />
+          <Group key={k} legend={f.label} required={f.required} help={f.help}>
+            <div className="flex flex-col items-start gap-1">
+              {(f.options || []).map((o) => <label className={optCls} key={o}><input type="checkbox" className="checkbox checkbox-primary checkbox-sm" name={k} value={o} checked={cur.includes(o)} onChange={(e) => toggle(o, e.target.checked)} /> {o}</label>)}
+              {f.other && <div className="flex w-full flex-wrap items-center gap-2">
+                <label className={optCls}><input type="checkbox" className="checkbox checkbox-primary checkbox-sm" checked={!!otherOn[k]} onChange={(e) => { setOtherOn((p) => ({ ...p, [k]: e.target.checked })); set(k, e.target.checked && other[k]?.trim() ? [...strip, `Autre : ${other[k].trim()}`] : strip); }} /> Autre :</label>
+                <input className="input input-sm min-w-40 flex-1" aria-label="Autre" disabled={!otherOn[k]} value={other[k] ?? ""} onChange={(e) => { const t = e.target.value; setOther((p) => ({ ...p, [k]: t })); set(k, [...strip, ...(t.trim() ? [`Autre : ${t.trim()}`] : [])]); }} />
               </div>}
             </div>
-          </fieldset>
+          </Group>
         );
       }
       case "file":
         return (
-          <label key={k}>{label(f)}
-            <input name={k} type="file" accept="image/*,application/pdf" onChange={async (e) => {
+          <Lbl key={k} label={f.label} required={f.required} help={f.help}>
+            <input name={k} type="file" className="file-input w-full" accept="image/*,application/pdf" onChange={async (e) => {
               const file = e.target.files?.[0];
               if (!file) { setFiles((p) => { const n = { ...p }; delete n[k]; return n; }); return; }
               try {
@@ -81,13 +83,12 @@ export default function RegistrationForm({ slug, fields, infoline }: { slug: str
                 setMsg({ t: "", s: "" });
               } catch (err: any) { e.target.value = ""; setMsg({ t: "err", s: err.message }); }
             }} />
-            {f.help && <small>{f.help}</small>}
-          </label>
+          </Lbl>
         );
       case "consent":
-        return <label className="chk" key={k}><input type="checkbox" name={k} checked={!!vals[k]} onChange={(e) => set(k, e.target.checked)} /> <span>{f.label}{f.required && <span className="req"> *</span>}</span></label>;
+        return <label key={k} className={optCls + " items-start"}><input type="checkbox" className="checkbox checkbox-primary checkbox-sm mt-1" name={k} checked={!!vals[k]} onChange={(e) => set(k, e.target.checked)} /> <span className="text-sm leading-snug">{f.label}{f.required && <span className="text-error"> *</span>}</span></label>;
       default:
-        return <label key={k}>{label(f)}<input name={k} type={f.type === "number" ? "number" : f.type} value={vals[k] ?? ""} onChange={(e) => set(k, e.target.value)} />{f.help && <small>{f.help}</small>}</label>;
+        return <Lbl key={k} label={f.label} required={f.required} help={f.help}><input name={k} className={inCls} type={f.type === "number" ? "number" : f.type} value={vals[k] ?? ""} onChange={(e) => set(k, e.target.value)} /></Lbl>;
     }
   }
 
@@ -95,7 +96,7 @@ export default function RegistrationForm({ slug, fields, infoline }: { slug: str
     e.preventDefault();
     const { errors } = validate(fields, vals, (k) => !!files[k]);
     if (errors.length) { setMsg({ t: "err", s: `Merci de compléter le formulaire. ${errors[0]}.` }); return; }
-    setBusy(true); setMsg({ t: "", s: "Envoi…" });
+    setBusy(true); setMsg({ t: "", s: "" });
     try {
       const fd = new FormData();
       fd.set("data", JSON.stringify(vals));
@@ -106,19 +107,21 @@ export default function RegistrationForm({ slug, fields, infoline }: { slug: str
       if (!r.ok) throw new Error(j.error || "Erreur");
       setDone(true);
       setMsg({ t: "ok", s: j.message || "Merci ! Votre inscription est enregistrée." });
-      window.scrollTo({ top: document.getElementById("inscription")!.offsetTop - 80, behavior: "smooth" });
+      document.getElementById("inscription")?.scrollIntoView({ behavior: "smooth" });
     } catch (err: any) {
       setMsg({ t: "err", s: `Échec de l'envoi : ${err.message}.${infoline ? ` Réessaie ou appelle l'Infoline : ${infoline}.` : ""}` });
     } finally { setBusy(false); }
   }
 
-  if (done) return <div className="card"><p className="msg ok" style={{ fontSize: 19 }}>{msg.s}</p></div>;
+  if (done) return <div className="card bg-base-200"><div className="card-body items-center gap-3 py-12 text-center"><CheckCircle2 size={48} className="text-success" /><p className="text-xl font-medium" role="status" data-testid="success">{msg.s}</p></div></div>;
   return (
-    <form className="card form" onSubmit={submit} noValidate>
-      {fields.filter((f) => isVisible(f, vals)).map(renderField)}
-      <input name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: "absolute", left: -9999 }} />
-      <button className="btn primary" disabled={busy}>{busy ? "Envoi…" : "Valider l'inscription"}</button>
-      {msg.s && <p className={"msg " + msg.t} role="status">{msg.s}</p>}
+    <form className="card bg-base-200" onSubmit={submit} noValidate>
+      <div className="card-body gap-4">
+        {fields.filter((f) => isVisible(f, vals)).map(renderField)}
+        <input name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" className="absolute -left-[9999px]" />
+        <button className="btn btn-primary btn-lg mt-2 rounded-full" disabled={busy}>{busy ? <span className="loading loading-spinner" /> : <Send size={18} />}{busy ? "Envoi…" : "Valider l'inscription"}</button>
+        {msg.s && msg.t === "err" && <Alert kind="error">{msg.s}</Alert>}
+      </div>
     </form>
   );
 }
