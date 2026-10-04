@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { ImagePlus, Trash2 } from "lucide-react";
 
 async function shrink(file: File): Promise<File> {
   const url = URL.createObjectURL(file);
@@ -19,11 +20,11 @@ export default function ImageField({ name, label, value }: { name: string; label
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
   return (
-    <div className="afield">
-      <span>{label}</span>
-      {url && <img src={url} alt="" style={{ maxWidth: 220, borderRadius: 12, border: "1px solid var(--line)" }} />}
+    <div className="flex flex-col gap-2 text-sm text-base-content/70">
+      <span className="flex items-center gap-2"><ImagePlus size={16} />{label}</span>
+      {url && <img src={url} alt="" className="max-w-56 rounded-xl border border-base-300" />}
       <input type="hidden" name={name} value={url} />
-      <input type="file" accept="image/*" disabled={busy} onChange={async (e) => {
+      <input type="file" className="file-input w-full max-w-md" accept="image/*" disabled={busy} onChange={async (e) => {
         const f = e.target.files?.[0]; if (!f) return;
         setBusy(true); setErr("");
         try {
@@ -34,11 +35,11 @@ export default function ImageField({ name, label, value }: { name: string; label
         } catch (x: any) { setErr(x.message || "Échec du téléversement"); }
         setBusy(false);
       }} />
-      <div className="arow" style={{ justifyContent: "flex-start", gap: 8 }}>
-        {busy && <span className="meta">Téléversement…</span>}
-        {url && <button type="button" className="abtn ghost sm" onClick={() => setUrl("")}>Retirer l&apos;image</button>}
+      <div className="flex items-center gap-3">
+        {busy && <span className="flex items-center gap-2"><span className="loading loading-spinner loading-sm" />Téléversement…</span>}
+        {url && <button type="button" className="btn btn-ghost btn-xs text-error" onClick={() => setUrl("")}><Trash2 size={14} />Retirer l&apos;image</button>}
       </div>
-      {err && <span className="msg err">{err}</span>}
+      {err && <span className="text-error">{err}</span>}
     </div>
   );
 }

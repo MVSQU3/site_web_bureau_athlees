@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Download, Search, Check, Undo2, Clock, XCircle, Trash2, Paperclip, UserCheck } from "lucide-react";
 import { q, one } from "@/lib/db";
 import { requireUser } from "@/lib/auth";
 import { fmtDateTime } from "@/lib/util";
@@ -20,7 +21,7 @@ export default async function EventRegistrations({ params, searchParams }: { par
   const fields: Field[] = ev.form;
   const val = (f: Field, r: any) => {
     const v = r.data[f.key];
-    if (f.type === "file") return r.files?.[f.key] ? <a href={`/admin/files/${r.files[f.key]}`} target="_blank" rel="noopener">Voir le fichier</a> : "";
+    if (f.type === "file") return r.files?.[f.key] ? <a className="link link-primary inline-flex items-center gap-1" href={`/admin/files/${r.files[f.key]}`} target="_blank" rel="noopener"><Paperclip size={14} />Voir le fichier</a> : "";
     return Array.isArray(v) ? v.join(" ; ") : v === true ? "Oui" : v ?? "";
   };
   const shown = all
@@ -30,47 +31,57 @@ export default async function EventRegistrations({ params, searchParams }: { par
   const title = (r: any) => String(r.data[fields.find((f) => f.type === "text")?.key || ""] ?? "(sans nom)") + (r.data.prenoms ? " " + r.data.prenoms : "");
   const count = (s: string) => all.filter((r) => r.status === s).length;
   const paid = all.filter((r) => r.paid && r.status !== "annule").length;
+  const Act = ({ action, icon: I, children, cls = "" }: any) => <form action={action} className="inline"><button className={"btn btn-ghost btn-xs " + cls}><I size={14} />{children}</button></form>;
   return (
     <>
-      <div className="adm-bar"><h1>{ev.title}</h1><span className="sp" /><a className="abtn ghost" href={`/admin/export/${ev.id}`}>Exporter en CSV</a></div>
-      <div className="arow" style={{ justifyContent: "flex-start", gap: 8, marginBottom: 16 }}>
-        <span className="chip">Inscrits : <b>{count("inscrit")}{ev.capacity ? ` / ${ev.capacity}` : ""}</b></span>
-        <span className="chip">Liste d&apos;attente : <b>{count("liste_attente")}</b></span>
-        <span className="chip">Annulés : <b>{count("annule")}</b></span>
-        <span className="chip">Paiements confirmés : <b>{paid}</b></span>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3"><h1 className="text-3xl font-bold tracking-tight">{ev.title}</h1><a className="btn btn-outline btn-sm" href={`/admin/export/${ev.id}`}><Download size={16} />Exporter en CSV</a></div>
+      <div className="stats stats-vertical mb-6 w-full bg-base-200 sm:stats-horizontal">
+        <div className="stat"><div className="stat-title">Inscrits</div><div className="stat-value text-3xl">{count("inscrit")}{ev.capacity ? <span className="text-lg text-base-content/50"> / {ev.capacity}</span> : null}</div></div>
+        <div className="stat"><div className="stat-title">Liste d&apos;attente</div><div className="stat-value text-3xl">{count("liste_attente")}</div></div>
+        <div className="stat"><div className="stat-title">Annulés</div><div className="stat-value text-3xl">{count("annule")}</div></div>
+        <div className="stat"><div className="stat-title">Paiements confirmés</div><div className="stat-value text-3xl">{paid}</div></div>
       </div>
-      <form className="adm-bar" method="get">
-        <input name="q" defaultValue={search} placeholder="Rechercher (nom, club, téléphone…)" style={{ maxWidth: 320 }} />
-        <select name="s" defaultValue={statut} style={{ width: "auto" }}><option value="">Tous les statuts</option>{Object.entries(STATUTS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select>
-        <button className="abtn ghost">Filtrer</button>
-        {(search || statut) && <Link className="abtn ghost" href={`/admin/registrations/${ev.id}`}>Effacer</Link>}
+      <form className="mb-5 flex flex-wrap gap-2" method="get">
+        <label className="input min-w-56 flex-1"><Search size={16} className="opacity-60" /><input name="q" defaultValue={search} placeholder="Rechercher (nom, club, téléphone…)" /></label>
+        <select name="s" className="select w-auto" defaultValue={statut}><option value="">Tous les statuts</option>{Object.entries(STATUTS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select>
+        <button className="btn btn-outline">Filtrer</button>
+        {(search || statut) && <Link className="btn btn-ghost" href={`/admin/registrations/${ev.id}`}>Effacer</Link>}
       </form>
-      {shown.map((r) => (
-        <div className="acard" key={r.id}>
-          <div className="arow">
-            <div>
-              <b>{title(r)}</b>{" "}
-              {r.status !== "annule" && <span className="chip">N°{rank.get(r.id)}</span>}
-              <span className={"chip " + (r.status === "inscrit" ? "ok" : r.status === "liste_attente" ? "warn" : "")}>{STATUTS[r.status]}</span>
-              {r.paid && <span className="chip ok">Paiement confirmé</span>}
-              <div className="meta">Inscrit(e) le {fmtDateTime(r.created_at)}</div>
-            </div>
-            <div style={{ whiteSpace: "nowrap" }}>
-              <form action={setRegistration.bind(null, r.id, { paid: !r.paid })} style={{ display: "inline" }}><button className="abtn ghost sm">{r.paid ? "Annuler le paiement" : "Confirmer le paiement"}</button></form>{" "}
-              {r.status !== "inscrit" && <form action={setRegistration.bind(null, r.id, { status: "inscrit" })} style={{ display: "inline" }}><button className="abtn ghost sm">→ Inscrit</button></form>}{" "}
-              {r.status !== "liste_attente" && <form action={setRegistration.bind(null, r.id, { status: "liste_attente" })} style={{ display: "inline" }}><button className="abtn ghost sm">→ Attente</button></form>}{" "}
-              {r.status !== "annule" && <form action={setRegistration.bind(null, r.id, { status: "annule" })} style={{ display: "inline" }}><button className="abtn ghost sm">Annuler</button></form>}{" "}
-              <form action={deleteRegistration.bind(null, r.id)} style={{ display: "inline" }}><button className="abtn danger sm">Supprimer</button></form>
+      <div className="space-y-3">
+        {shown.map((r) => (
+          <div className="card bg-base-200" key={r.id}>
+            <div className="card-body gap-3 py-4">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <div className="flex flex-wrap items-center gap-2"><b className="text-lg">{title(r)}</b>
+                    {r.status !== "annule" && <span className="badge badge-neutral">N°{rank.get(r.id)}</span>}
+                    <span className={"badge " + (r.status === "inscrit" ? "badge-success" : r.status === "liste_attente" ? "badge-warning" : "badge-ghost")}>{STATUTS[r.status]}</span>
+                    {r.paid && <span className="badge badge-success badge-outline">Paiement confirmé</span>}
+                  </div>
+                  <div className="text-sm text-base-content/60">Inscrit(e) le {fmtDateTime(r.created_at)}</div>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  <Act action={setRegistration.bind(null, r.id, { paid: !r.paid })} icon={r.paid ? Undo2 : Check}>{r.paid ? "Annuler le paiement" : "Confirmer le paiement"}</Act>
+                  {r.status !== "inscrit" && <Act action={setRegistration.bind(null, r.id, { status: "inscrit" })} icon={UserCheck}>Inscrit</Act>}
+                  {r.status !== "liste_attente" && <Act action={setRegistration.bind(null, r.id, { status: "liste_attente" })} icon={Clock}>Attente</Act>}
+                  {r.status !== "annule" && <Act action={setRegistration.bind(null, r.id, { status: "annule" })} icon={XCircle}>Annuler</Act>}
+                  <Act action={deleteRegistration.bind(null, r.id)} icon={Trash2} cls="text-error">Supprimer</Act>
+                </div>
+              </div>
+              <div className="collapse collapse-arrow border border-base-300 bg-base-100">
+                <input type="checkbox" aria-label="Voir toutes les réponses" />
+                <div className="collapse-title text-sm text-primary">Voir toutes les réponses</div>
+                <div className="collapse-content overflow-x-auto">
+                  <table className="table table-sm"><tbody>
+                    {fields.filter((f) => f.type !== "section" && (r.data[f.key] !== undefined || r.files?.[f.key])).map((f) => <tr key={f.key}><th className="w-2/5 font-normal text-base-content/60">{f.label.slice(0, 120)}</th><td>{val(f, r)}</td></tr>)}
+                  </tbody></table>
+                </div>
+              </div>
             </div>
           </div>
-          <details style={{ marginTop: 10 }}><summary>Voir toutes les réponses</summary>
-            <table className="t"><tbody>
-              {fields.filter((f) => f.type !== "section" && (r.data[f.key] !== undefined || r.files?.[f.key])).map((f) => <tr key={f.key}><th style={{ width: "42%" }}>{f.label.slice(0, 120)}</th><td>{val(f, r)}</td></tr>)}
-            </tbody></table>
-          </details>
-        </div>
-      ))}
-      {shown.length === 0 && <p className="meta">Aucune inscription.</p>}
+        ))}
+        {shown.length === 0 && <p className="py-8 text-center text-base-content/60">Aucune inscription.</p>}
+      </div>
     </>
   );
 }

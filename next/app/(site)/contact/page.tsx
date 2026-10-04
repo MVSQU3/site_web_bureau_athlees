@@ -1,16 +1,21 @@
+import { Mail, Phone, MapPin } from "lucide-react";
 import { settings, telHref } from "@/lib/util";
 import ContactForm from "@/components/ContactForm";
+import { PageHead } from "@/components/ui";
 
 export const metadata = { title: "Contact & adhésion" };
 
 export default async function Contact() {
   const s = await settings();
   return (
-    <div className="page"><div className="wrap narrow">
-      <p className="eyebrow">Contact &amp; adhésion</p>
-      <h1 className="h1s">Parlons-en.</h1>
-      <p className="lead left">{s.email}<br /><a href={telHref(s.phone)}>{s.phone}</a><br />{s.address}</p>
+    <div className="mx-auto max-w-3xl px-4 py-16">
+      <PageHead eyebrow="Contact & adhésion" title="Parlons-en." lead={
+        <span className="flex flex-col gap-2 text-base">
+          <span className="flex items-center gap-2"><Mail size={18} className="text-secondary" />{s.email}</span>
+          <a className="flex items-center gap-2" href={telHref(s.phone)}><Phone size={18} className="text-secondary" />{s.phone}</a>
+          <span className="flex items-center gap-2"><MapPin size={18} className="text-secondary" />{s.address}</span>
+        </span>} />
       <ContactForm />
-    </div></div>
+    </div>
   );
 }

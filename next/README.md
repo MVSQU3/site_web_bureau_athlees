@@ -4,7 +4,7 @@ Nouveau site (en parallèle du site statique à la racine du dépôt).
 
 - **Site public** : accueil, à propos, athlètes, actualités, calendrier, contact, pages d'événements avec formulaire d'inscription.
 - **Back office** (`/admin`) : événements + constructeur de formulaires, inscriptions (statuts, paiements, pièces jointes, export CSV), actualités, calendrier, athlètes, bureau, messages, utilisateurs, réglages.
-- **Stack** : Next.js (App Router), PostgreSQL (`pg`), sessions signées (`jose`), mots de passe hachés (`bcryptjs`). Aucune autre dépendance.
+- **Stack** : Next.js (App Router), Tailwind CSS 4 + daisyUI 5 (thèmes `fibad-dark` et `fibad-light`), icônes lucide-react, PostgreSQL (`pg`), sessions signées (`jose`), mots de passe hachés (`bcryptjs`).
 
 ## Déploiement sur Vercel
 
