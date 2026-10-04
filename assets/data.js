@@ -135,12 +135,14 @@ window.SITE = {
     {
       id: "camp",
       debut: "2026-10-27",
+      href: "#camp",
+      infoline: "+225 07 77 57 71 98",
       titre: "Camp d'entraînement de badminton",
       affiche: "assets/img/camp-2026.jpg",
       accroche:
         "La FIBAD organise un grand camp d'entraînement pour les jeunes passionnés : 3 jours d'apprentissage, de perfectionnement et de passion, que tu sois débutant ou déjà pratiquant. Parents, entraîneurs et clubs, relayez l'information !",
       dates: "27, 28 et 29 octobre 2026",
-      lieu: "Palais des Sports de Treichville",
+      lieu: "Palais des Sports de Treichville – Hall 2",
       extra: [
         ["Âge", "À partir de 7 ans"],
         ["Places limitées", "Transport pris en charge pour les 40 premiers inscrits"],

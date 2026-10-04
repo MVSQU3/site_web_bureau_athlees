@@ -15,7 +15,11 @@ export default async function handler(req, res) {
   try {
     const p = await db();
     const table =
-      { inscriptions: "inscriptions", open: "open_inscriptions" }[
+      {
+        inscriptions: "inscriptions",
+        open: "open_inscriptions",
+        camp: "camp_inscriptions",
+      }[
         req.query.type
       ] || "messages";
     const id = Number(req.query.id);

@@ -303,6 +303,101 @@
     });
   }
 
+  // Inscription au Camp d'entraînement
+  const C = evt("camp");
+  if (C) {
+    const f = $("#camp-form");
+    $("#camp-titre").textContent = C.titre;
+    $("#camp-info").textContent = `${C.dates} · ${C.lieu}. Ouvert aux enfants, jeunes et adultes à partir de 7 ans. Les 40 premiers inscrits ont leur transport pris en charge par la FIBAD.`;
+    const L = {
+      pratique: ["Non, je suis débutant(e)", "Oui, occasionnellement", "Oui, régulièrement", "Joueur/Joueuse confirmé(e)"],
+      duree: ["Moins de 1 an", "1 à 2 ans", "3 à 5 ans", "Plus de 5 ans"],
+      objectifs: ["Découvrir le badminton", "Apprendre les bases techniques", "Améliorer mon niveau", "Préparer des compétitions", "Améliorer ma condition physique", "Me perfectionner techniquement et tactiquement"],
+    };
+    const inp = (name, label, o = {}) => `<label>${label}${o.req ? " *" : ""}<input name="${name}" type="${o.type || "text"}" ${o.req ? "required" : ""} ${o.minor ? 'data-minor="1"' : ""} ${o.ac ? `autocomplete="${o.ac}"` : ""}></label>`;
+    const grp = (title, body, o = {}) => `<fieldset class="tabl" ${o.id ? `id="${o.id}"` : ""} ${o.hidden ? "hidden" : ""}><legend>${title}</legend>${o.note ? `<p class="meta">${o.note}</p>` : ""}${body}</fieldset>`;
+    const radios = (name, vals, req = true, extra = "") => `<div class="opts">${vals.map((v) => `<label class="chk"><input type="radio" name="${name}" value="${esc(v)}" ${req ? "required" : ""}> ${esc(v)}</label>`).join("")}${extra}</div>`;
+    const autreRadio = (name, ph = "Préciser") => `<label class="chk"><input type="radio" name="${name}" value="Autre" required> Autre :</label><input name="${name}_autre" class="inline" aria-label="${ph}" disabled>`;
+    const nonOui = (name, label) => grp(label, `<div class="opts"><label class="chk"><input type="radio" name="${name}" value="Non" required> Non</label><label class="chk"><input type="radio" name="${name}" value="Oui" required> Oui</label><input name="${name}_detail" class="inline" placeholder="Précisez" aria-label="Précisez" disabled></div>`);
+    f.innerHTML = [
+      `<h3 class="sub">1. Participant</h3>`,
+      `<div class="row">${inp("nom", "Nom", { req: 1, ac: "family-name" })}${inp("prenoms", "Prénom(s)", { req: 1, ac: "given-name" })}</div>`,
+      `<div class="row">${inp("naissance", "Date de naissance", { req: 1, type: "date" })}<label>Âge<input id="camp-age" readonly tabindex="-1" placeholder="calculé automatiquement"></label></div>`,
+      grp("Sexe *", radios("sexe", ["Masculin", "Féminin"])),
+      `<div class="row">${inp("telephone", "Téléphone du participant", { type: "tel" })}${inp("adresse", "Adresse / Commune", { req: 1 })}</div>`,
+      grp("2. Parent / tuteur *", `<div class="form">${inp("parent_nom", "Nom et prénom du parent / tuteur", { minor: 1 })}
+        <div class="opts">${["Père", "Mère", "Tuteur légal"].map((v) => `<label class="chk"><input type="radio" name="parent_lien" value="${v}" data-minor="1"> ${v}</label>`).join("")}<label class="chk"><input type="radio" name="parent_lien" value="Autre" data-minor="1"> Autre :</label><input name="parent_lien_autre" class="inline" aria-label="Lien" disabled></div>
+        <div class="row">${inp("parent_tel", "Téléphone", { type: "tel", minor: 1 })}${inp("parent_whatsapp", "WhatsApp", { type: "tel" })}</div>${inp("parent_adresse", "Adresse", { minor: 1 })}</div>`, { id: "camp-parent", hidden: 1, note: "Obligatoire pour les participants de moins de 18 ans." }),
+      `<h3 class="sub">3. Niveau de pratique</h3>`,
+      grp("Avez-vous déjà pratiqué le badminton ? *", radios("pratique", L.pratique)),
+      grp("Depuis combien de temps pratiquez-vous ? *", radios("duree", L.duree), { id: "camp-duree", hidden: 1 }),
+      inp("club", "Club / structure actuelle (si applicable)"),
+      `<h3 class="sub">4. Objectifs du camp</h3>`,
+      grp("Pourquoi souhaitez-vous participer au camp ? *", `<div class="opts col">${L.objectifs.map((v) => `<label class="chk"><input type="checkbox" name="objectifs" value="${esc(v)}"> ${esc(v)}</label>`).join("")}<div class="opts"><label class="chk"><input type="checkbox" name="objectifs" value="Autre"> Autre :</label><input name="objectifs_autre" class="inline" aria-label="Autre objectif" disabled></div></div>`),
+      `<h3 class="sub">5. Informations sportives</h3>`,
+      grp("Avez-vous une expérience en compétition ? *", radios("competition", ["Oui", "Non"])),
+      `<div id="camp-niveau" hidden>${inp("competition_niveau", "Si oui, précisez votre niveau")}</div>`,
+      grp("Main dominante *", radios("main", ["Droite", "Gauche"])),
+      inp("categorie", "Catégorie / niveau actuel (si connu)"),
+      `<h3 class="sub">6. Informations médicales</h3><p class="meta">Ces informations sont communiquées de manière confidentielle à l'encadrement.</p>`,
+      nonOui("medical", "Le participant présente-t-il une condition particulière dont les encadreurs doivent être informés ? *"),
+      nonOui("allergies", "Allergies connues *"),
+      nonOui("traitement", "Traitement médical particulier à signaler *"),
+      `<h3 class="sub">7. Personne à contacter en cas d'urgence</h3>`,
+      `<div class="row">${inp("urgence_nom", "Nom et prénom", { req: 1 })}${inp("urgence_lien", "Lien avec le participant", { req: 1 })}</div>`,
+      `<div class="row">${inp("urgence_tel", "Téléphone principal", { req: 1, type: "tel" })}${inp("urgence_tel2", "Téléphone secondaire", { type: "tel" })}</div>`,
+      grp("8. Autorisation parentale *", `<p class="meta" id="camp-autor-txt"></p>${radios("autorisation", ["J'accepte", "Je n'accepte pas"], false)}`, { id: "camp-autor", hidden: 1, note: "Obligatoire pour les participants mineurs." }),
+      `<h3 class="sub">9. Droit à l'image</h3>`,
+      grp("J'autorise l'utilisation de l'image du participant dans les supports de communication de l'organisation (photos et vidéos du camp) *", radios("image", ["Oui", "Non"])),
+      `<label class="chk"><input type="checkbox" name="engagement" required> Je certifie que les informations fournies dans ce formulaire sont exactes et m'engage à respecter les règles et consignes de sécurité du camp. *</label>`,
+      `<input name="site" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">`,
+      `<p id="camp-help" class="meta"></p>`,
+      `<button class="btn primary" type="submit">Valider l'inscription</button><p class="msg" id="camp-msg" role="status"></p>`,
+    ].join("");
+    const tel = C.infoline.replace(/\s/g, "");
+    $("#camp-help").innerHTML = `Besoin d'aide ? Infoline / WhatsApp : <a href="tel:${esc(tel)}">${esc(C.infoline)}</a>`;
+    const m = $("#camp-msg"), val = (n) => (f.querySelector(`[name=${n}]:checked`) || {}).value || "";
+    let mineur = false, ageOk = false;
+    const sync = () => {
+      const v = f.naissance.value, n = v ? new Date(v + "T00:00:00") : null;
+      const ref = d(C.debut), age = n ? ref.getFullYear() - n.getFullYear() - (ref < new Date(ref.getFullYear(), n.getMonth(), n.getDate()) ? 1 : 0) : null;
+      ageOk = age !== null && age >= 7 && age <= 100; mineur = ageOk && age < 18;
+      $("#camp-age").value = age === null ? "" : age < 7 ? `${age} ans (minimum 7 ans)` : `${age} ans`;
+      [["#camp-parent", mineur], ["#camp-autor", mineur], ["#camp-duree", val("pratique") && val("pratique") !== L.pratique[0]], ["#camp-niveau", val("competition") === "Oui"]].forEach(([s, on]) => { $(s).hidden = !on; });
+      f.querySelectorAll("[data-minor]").forEach((e) => { e.required = mineur && (e.type === "radio" || !e.name.endsWith("whatsapp")); });
+      f.querySelectorAll("[name=autorisation]").forEach((e) => { e.required = mineur; });
+      f.querySelectorAll("[name=duree]").forEach((e) => { e.required = !$("#camp-duree").hidden; });
+      if (mineur) $("#camp-autor-txt").textContent = `Je soussigné(e) ${f.parent_nom.value || "…"}, parent / tuteur, autorise mon enfant ${[f.prenoms.value, f.nom.value].join(" ").trim() || "…"} à participer au Camp d'entraînement de badminton, et autorise l'équipe d'encadrement à prendre les dispositions nécessaires en cas d'urgence et à contacter la personne indiquée dans ce formulaire.`;
+      [["parent_lien", "parent_lien_autre"], ["objectifs", "objectifs_autre"]].forEach(([g, a]) => { f[a].disabled = !f.querySelector(`[name=${g}][value=Autre]:checked`); if (f[a].disabled) f[a].value = ""; });
+      ["medical", "allergies", "traitement"].forEach((g) => { const x = f[g + "_detail"]; x.disabled = val(g) !== "Oui"; if (x.disabled) x.value = ""; });
+    };
+    f.addEventListener("input", sync); f.addEventListener("change", sync); sync();
+    f.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      sync();
+      const err = (t) => { m.className = "msg err"; m.textContent = t; m.scrollIntoView({ block: "center" }); };
+      if (!ageOk) return err("Le camp est ouvert à partir de 7 ans : vérifie la date de naissance.");
+      const obj = [...f.querySelectorAll("[name=objectifs]:checked")].map((c) => c.value === "Autre" ? `Autre : ${f.objectifs_autre.value.trim()}` : c.value);
+      if (!f.checkValidity() || !obj.length || obj.includes("Autre : ") || (mineur && val("parent_lien") === "Autre" && !f.parent_lien_autre.value.trim()) || ["medical", "allergies", "traitement"].some((g) => val(g) === "Oui" && !f[g + "_detail"].value.trim())) return err("Merci de répondre à toutes les questions obligatoires (*).");
+      if (mineur && val("autorisation") !== "J'accepte") return err("L'autorisation parentale est nécessaire pour inscrire un mineur.");
+      const data = Object.fromEntries(new FormData(f));
+      ["parent_lien_autre", "objectifs_autre", "medical_detail", "allergies_detail", "traitement_detail"].forEach((k) => delete data[k]);
+      if (data.parent_lien === "Autre") data.parent_lien = `Autre : ${f.parent_lien_autre.value.trim()}`;
+      ["medical", "allergies", "traitement"].forEach((g) => { if (data[g] === "Oui") data[g] = `Oui : ${f[g + "_detail"].value.trim()}`; });
+      Object.assign(data, { objectifs: obj, engagement: true });
+      const btn = f.querySelector("button[type=submit]"); btn.disabled = true; m.className = "msg"; m.textContent = "Envoi…";
+      try {
+        const r = await fetch("/api/camp", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+        const j = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(j.error || "Erreur");
+        m.className = "msg ok"; m.textContent = "Merci pour ton inscription ! Sport • Discipline • Performance • Plaisir.";
+        f.reset(); sync(); m.scrollIntoView({ block: "center" });
+      } catch (x) {
+        err(`Échec de l'envoi (${x.message}). Réessaie ou appelle l'Infoline : ${C.infoline}.`);
+      } finally { btn.disabled = false; }
+    });
+  }
+
   // Thème clair / sombre
   const sun =
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
@@ -332,6 +427,7 @@
     "contact",
     "inscription",
     "open",
+    "camp",
   ];
   const burger = $(".burger"),
     links = $(".links");

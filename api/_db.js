@@ -65,6 +65,16 @@ export async function db() {
     paiement text not null,
     preuve text,
     paye boolean not null default false
+  );
+  create table if not exists camp_inscriptions (
+    id serial primary key,
+    created_at timestamptz not null default now(),
+    nom text not null,
+    prenoms text not null,
+    naissance date not null,
+    sexe text not null,
+    mineur boolean not null,
+    donnees jsonb not null
   )`);
   await ready.catch((e) => {
     ready = undefined;
