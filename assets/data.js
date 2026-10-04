@@ -11,7 +11,7 @@ window.SITE = {
   chiffres: [
     { valeur: "24", label: "Athlètes représentés" },
     { valeur: "12", label: "Compétitions / an" },
-    { valeur: "8", label: "Médailles internationales" },
+    { valeur: "2", label: "Médailles internationales" },
   ],
   valeurs: [
     {
