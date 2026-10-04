@@ -26,8 +26,12 @@ Nouveau site (en parallèle du site statique à la racine du dépôt).
 ```bash
 cd next
 npm install
-DATABASE_URL=postgres://… AUTH_SECRET=… ADMIN_EMAIL=… ADMIN_PASSWORD=… npm run dev
+cp .env.example .env.local     # sous Windows : copy .env.example .env.local
+# ouvre .env.local et remplis DATABASE_URL, AUTH_SECRET, ADMIN_EMAIL, ADMIN_PASSWORD
+npm run dev                    # http://localhost:3000  ·  back office : /admin/login
 ```
+
+`DATABASE_URL` : copie-la depuis Vercel → **Storage** → ta base Neon (onglet `.env.local`). Pour ne pas toucher aux vraies inscriptions pendant les essais, crée plutôt une **branche** de la base dans la console Neon et utilise son adresse en local.
 
 ## Notes
 

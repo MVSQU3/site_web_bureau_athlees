@@ -8,7 +8,7 @@ const COOKIE = "session";
 const secret = () => {
   const s = process.env.AUTH_SECRET;
   if (!s || s.length < 16)
-    throw new Error("AUTH_SECRET manquant (16 caractères minimum)");
+    throw new Error("AUTH_SECRET manquant (16 caractères minimum) : voir next/.env.example");
   return new TextEncoder().encode(s);
 };
 

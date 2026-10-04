@@ -16,7 +16,7 @@ declare global {
 }
 
 function pool(): pg.Pool {
-  if (!url) throw new Error("DATABASE_URL manquant");
+  if (!url) throw new Error("DATABASE_URL manquant : crée le fichier next/.env.local (voir next/.env.example) puis relance « npm run dev ».");
   if (!globalThis.__pool) {
     const u = new URL(url);
     const local = ["localhost", "127.0.0.1"].includes(u.hostname);
