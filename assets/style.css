@@ -107,3 +107,4 @@ input[type=file]{padding:10px}
 .sub{font-size:19px;margin:18px 0 -4px;letter-spacing:-.01em}
 .form .meta{font-size:14px;color:var(--mute);margin:0 0 8px}
 #camp-age{opacity:.8}
+[hidden]{display:none!important}
