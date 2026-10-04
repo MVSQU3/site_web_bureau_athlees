@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -13,8 +14,10 @@ const themeScript = `try{var t=localStorage.getItem("theme");document.documentEl
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr" data-theme="fibad-dark" suppressHydrationWarning>
-      <head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head>
-      <body className="min-h-screen bg-base-100 font-sans text-base-content">{children}</body>
+      <body className="min-h-screen bg-base-100 font-sans text-base-content">
+        <Script id="theme-init" strategy="beforeInteractive">{themeScript}</Script>
+        {children}
+      </body>
     </html>
   );
 }
