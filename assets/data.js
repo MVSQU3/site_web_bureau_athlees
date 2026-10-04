@@ -133,6 +133,27 @@ window.SITE = {
       ],
     },
     {
+      id: "camp",
+      debut: "2026-10-27",
+      titre: "Camp d'entraînement de badminton",
+      affiche: "assets/img/camp-2026.jpg",
+      accroche:
+        "La FIBAD organise un grand camp d'entraînement pour les jeunes passionnés : 3 jours d'apprentissage, de perfectionnement et de passion, que tu sois débutant ou déjà pratiquant. Parents, entraîneurs et clubs, relayez l'information !",
+      dates: "27, 28 et 29 octobre 2026",
+      lieu: "Palais des Sports de Treichville",
+      extra: [
+        ["Âge", "À partir de 7 ans"],
+        ["Places limitées", "Transport pris en charge pour les 40 premiers inscrits"],
+      ],
+      programme: [
+        {
+          jour: "27, 28 et 29 octobre",
+          discipline: "Camp d'entraînement",
+          tableaux: ["Apprentissage", "Perfectionnement", "Débutants et pratiquants"],
+        },
+      ],
+    },
+    {
       id: "championnat",
       debut: "2026-10-29",
       href: "#inscription",
@@ -167,6 +188,12 @@ window.SITE = {
   ],
   actualites: [
     {
+      date: "2026-10-04",
+      titre: "Camp d'entraînement : 27, 28 et 29 octobre",
+      texte:
+        "Pour les jeunes à partir de 7 ans, au Palais des Sports de Treichville. Places limitées : la FIBAD prend en charge le transport des 40 premiers inscrits.",
+    },
+    {
       date: "2026-10-03",
       titre: "Open de l'amitié 2026 : inscriptions ouvertes",
       texte:
@@ -198,6 +225,11 @@ window.SITE = {
     },
   ],
   calendrier: [
+    {
+      date: "2026-10-27",
+      titre: "Camp d'entraînement de badminton (27, 28 et 29 octobre)",
+      lieu: "Palais des Sports de Treichville",
+    },
     {
       date: "2026-10-24",
       titre: "Open de l'amitié – 2e édition (doubles hommes et mixtes)",

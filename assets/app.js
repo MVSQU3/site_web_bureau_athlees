@@ -63,16 +63,18 @@
   const EVTS = [...(S.evenements || [])].sort((x, y) => x.debut.localeCompare(y.debut));
   const evt = (id) => EVTS.find((x) => x.id === id);
   const eventCard = (E) => {
-    const open = d(E.limite) >= today;
+    const open = E.limite ? d(E.limite) >= today : true;
+    const tel = E.infoline ? `<li><b>Infoline</b><a href="tel:${esc(E.infoline.replace(/\s/g, ""))}">${esc(E.infoline)}</a></li>` : "";
+    const bouton = !open ? `<span class="tag">Inscriptions closes</span>` : E.href ? `<a class="btn primary" href="${esc(E.href)}">S'inscrire ›</a>` : `<span class="tag">Formulaire d'inscription bientôt disponible</span>`;
     return `<article class="event">
       <a class="event-img" href="${esc(E.affiche)}" target="_blank" rel="noopener"><img src="${esc(E.affiche)}" alt="Affiche : ${esc(E.titre)}" loading="lazy"></a>
       <div class="event-body">
         <p class="eyebrow">Événement</p>
         <h2>${esc(E.titre)}</h2>
         <p>${esc(E.accroche)}</p>
-        <ul class="event-facts"><li><b>Dates</b>${esc(E.dates)}</li><li><b>Lieu</b>${esc(E.lieu)}</li>${E.tarif ? `<li><b>Participation</b>${esc(E.tarif)}</li>` : ""}<li><b>Inscriptions</b>jusqu'au ${fmt(E.limite)}</li><li><b>Infoline</b><a href="tel:${esc(E.infoline.replace(/\s/g, ""))}">${esc(E.infoline)}</a></li></ul>
+        <ul class="event-facts"><li><b>Dates</b>${esc(E.dates)}</li><li><b>Lieu</b>${esc(E.lieu)}</li>${(E.extra || []).map(([k, v]) => `<li><b>${esc(k)}</b>${esc(v)}</li>`).join("")}${E.tarif ? `<li><b>Participation</b>${esc(E.tarif)}</li>` : ""}${E.limite ? `<li><b>Inscriptions</b>jusqu'au ${fmt(E.limite)}</li>` : ""}${tel}</ul>
         <div class="event-prog">${E.programme.map((p) => `<div><span class="date">${esc(p.jour)}</span><h3>${esc(p.discipline)}</h3><p>${p.tableaux.map(esc).join(" · ")}</p></div>`).join("")}</div>
-        <div class="btns left">${open ? `<a class="btn primary" href="${esc(E.href)}">S'inscrire ›</a>` : `<span class="tag">Inscriptions closes</span>`}</div>
+        <div class="btns left">${bouton}</div>
       </div>
     </article>`;
   };
