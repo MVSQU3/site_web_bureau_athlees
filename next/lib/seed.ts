@@ -51,38 +51,38 @@ const camp: Field[] = [
   radio("sexe", "Sexe", ["Masculin", "Féminin"]),
   { key: "telephone", label: "Téléphone du participant", type: "tel" },
   text("adresse", "Adresse / Commune", { required: true }),
-  section("s2", "2. Parent / tuteur", { help: "Obligatoire pour les participants de moins de 18 ans.", showIf: if_("mineur", "Oui") }),
+  section("s2", "Parent / tuteur", { help: "Obligatoire pour les participants de moins de 18 ans.", showIf: if_("mineur", "Oui") }),
   text("parent_nom", "Nom et prénom du parent / tuteur", { required: true, showIf: if_("mineur", "Oui") }),
   radio("parent_lien", "Lien avec le participant", ["Père", "Mère", "Tuteur légal"], { other: true, showIf: if_("mineur", "Oui") }),
   { key: "parent_tel", label: "Téléphone", type: "tel", required: true, showIf: if_("mineur", "Oui") },
   { key: "parent_whatsapp", label: "WhatsApp", type: "tel", showIf: if_("mineur", "Oui") },
   text("parent_adresse", "Adresse", { required: true, showIf: if_("mineur", "Oui") }),
-  section("s3", "3. Niveau de pratique"),
+  section("s3", "2. Niveau de pratique"),
   radio("pratique", "Avez-vous déjà pratiqué le badminton ?", ["Non, je suis débutant(e)", "Oui, occasionnellement", "Oui, régulièrement", "Joueur/Joueuse confirmé(e)"]),
   radio("duree", "Depuis combien de temps pratiquez-vous le badminton ?", ["Moins de 1 an", "1 à 2 ans", "3 à 5 ans", "Plus de 5 ans"], { showIf: if_("pratique", "Oui, occasionnellement", "Oui, régulièrement", "Joueur/Joueuse confirmé(e)") }),
   text("club", "Club / structure actuelle (si applicable)"),
-  section("s4", "4. Objectifs du camp"),
+  section("s4", "3. Objectifs du camp"),
   check("objectifs", "Pourquoi souhaitez-vous participer au camp ?", ["Découvrir le badminton", "Apprendre les bases techniques", "Améliorer mon niveau", "Préparer des compétitions", "Améliorer ma condition physique", "Me perfectionner techniquement et tactiquement"], { required: true, other: true }),
-  section("s5", "5. Informations sportives"),
+  section("s5", "4. Informations sportives"),
   radio("competition", "Avez-vous une expérience en compétition ?", OUINON),
   text("competition_niveau", "Si oui, précisez votre niveau", { showIf: if_("competition", "Oui") }),
   radio("main", "Main dominante", ["Droite", "Gauche"]),
   text("categorie", "Catégorie / niveau actuel (si connu)"),
-  section("s6", "6. Informations médicales", { help: "Ces informations sont communiquées de manière confidentielle à l'encadrement." }),
+  section("s6", "5. Informations médicales", { help: "Ces informations sont communiquées de manière confidentielle à l'encadrement." }),
   radio("medical", "Le participant présente-t-il une condition particulière dont les encadreurs doivent être informés ?", ["Non", "Oui"]),
   text("medical_detail", "Précisez", { required: true, showIf: if_("medical", "Oui") }),
   radio("allergies", "Allergies connues", ["Non", "Oui"]),
   text("allergies_detail", "Précisez les allergies", { required: true, showIf: if_("allergies", "Oui") }),
   radio("traitement", "Traitement médical particulier à signaler", ["Non", "Oui"]),
   text("traitement_detail", "Précisez le traitement", { required: true, showIf: if_("traitement", "Oui") }),
-  section("s7", "7. Personne à contacter en cas d'urgence"),
+  section("s7", "6. Personne à contacter en cas d'urgence"),
   text("urgence_nom", "Nom et prénom", { required: true }),
   text("urgence_lien", "Lien avec le participant", { required: true }),
   { key: "urgence_tel", label: "Téléphone principal", type: "tel", required: true },
   { key: "urgence_tel2", label: "Téléphone secondaire", type: "tel" },
-  section("s8", "8. Autorisation parentale", { showIf: if_("mineur", "Oui") }),
+  section("s8", "Autorisation parentale", { showIf: if_("mineur", "Oui") }),
   { key: "autorisation", label: "Je soussigné(e), parent / tuteur, autorise mon enfant à participer au Camp d'entraînement de badminton, et autorise l'équipe d'encadrement à prendre les dispositions nécessaires en cas d'urgence et à contacter la personne indiquée dans ce formulaire.", type: "consent", required: true, showIf: if_("mineur", "Oui") },
-  section("s9", "9. Droit à l'image"),
+  section("s9", "7. Droit à l'image"),
   radio("image", "J'autorise l'utilisation de l'image du participant dans les supports de communication de l'organisation (photos et vidéos du camp)", OUINON),
   { key: "engagement", label: "Je certifie que les informations fournies dans ce formulaire sont exactes et m'engage à respecter les règles et consignes de sécurité du camp.", type: "consent", required: true },
 ];
@@ -98,7 +98,7 @@ export async function seed(p: pg.Pool) {
   await set("address", "Abidjan, Côte d'Ivoire");
   await set("hero_lead", "Nous représentons, accompagnons et faisons rayonner les joueuses et joueurs de badminton de Côte d'Ivoire.");
   await set("about_lead", "Le Bureau des Athlètes est l'instance qui défend les intérêts des sportifs de haut niveau du badminton ivoirien : conditions d'entraînement, sélection, suivi médical, reconversion.");
-  await set("stats", "24 | Athlètes représentés\n12 | Compétitions / an\n8 | Médailles internationales");
+  await set("stats", "24 | Athlètes représentés\n12 | Compétitions / an\n2 | Médailles internationales");
   await set("values", "Représenter | Porter la voix des athlètes auprès de la fédération et des institutions.\nAccompagner | Soutenir chaque joueur dans sa carrière sportive, scolaire et professionnelle.\nRayonner | Faire briller le badminton ivoirien en Afrique et dans le monde.");
 
   const bureau: [string, string][] = [

@@ -325,7 +325,7 @@
       `<div class="row">${inp("naissance", "Date de naissance", { req: 1, type: "date" })}<label>Âge<input id="camp-age" readonly tabindex="-1" placeholder="calculé automatiquement"></label></div>`,
       grp("Sexe *", radios("sexe", ["Masculin", "Féminin"])),
       `<div class="row">${inp("telephone", "Téléphone du participant", { type: "tel" })}${inp("adresse", "Adresse / Commune", { req: 1 })}</div>`,
-      grp("2. Parent / tuteur *", `<div class="form">${inp("parent_nom", "Nom et prénom du parent / tuteur", { minor: 1 })}
+      grp("Parent / tuteur *", `<div class="form">${inp("parent_nom", "Nom et prénom du parent / tuteur", { minor: 1 })}
         <div class="opts">${["Père", "Mère", "Tuteur légal"].map((v) => `<label class="chk"><input type="radio" name="parent_lien" value="${v}" data-minor="1"> ${v}</label>`).join("")}<label class="chk"><input type="radio" name="parent_lien" value="Autre" data-minor="1"> Autre :</label><input name="parent_lien_autre" class="inline" aria-label="Lien" disabled></div>
         <div class="row">${inp("parent_tel", "Téléphone", { type: "tel", minor: 1 })}${inp("parent_whatsapp", "WhatsApp", { type: "tel" })}</div>${inp("parent_adresse", "Adresse", { minor: 1 })}</div>`, { id: "camp-parent", hidden: 1, note: "Obligatoire pour les participants de moins de 18 ans." }),
       `<h3 class="sub">2. Niveau de pratique</h3>`,
@@ -346,7 +346,7 @@
       `<h3 class="sub">6. Personne à contacter en cas d'urgence</h3>`,
       `<div class="row">${inp("urgence_nom", "Nom et prénom", { req: 1 })}${inp("urgence_lien", "Lien avec le participant", { req: 1 })}</div>`,
       `<div class="row">${inp("urgence_tel", "Téléphone principal", { req: 1, type: "tel" })}${inp("urgence_tel2", "Téléphone secondaire", { type: "tel" })}</div>`,
-      grp("8. Autorisation parentale *", `<p class="meta" id="camp-autor-txt"></p>${radios("autorisation", ["J'accepte", "Je n'accepte pas"], false)}`, { id: "camp-autor", hidden: 1, note: "Obligatoire pour les participants mineurs." }),
+      grp("Autorisation parentale *", `<p class="meta" id="camp-autor-txt"></p>${radios("autorisation", ["J'accepte", "Je n'accepte pas"], false)}`, { id: "camp-autor", hidden: 1, note: "Obligatoire pour les participants mineurs." }),
       `<h3 class="sub">7. Droit à l'image</h3>`,
       grp("J'autorise l'utilisation de l'image du participant dans les supports de communication de l'organisation (photos et vidéos du camp) *", radios("image", ["Oui", "Non"])),
       `<label class="chk"><input type="checkbox" name="engagement" required> Je certifie que les informations fournies dans ce formulaire sont exactes et m'engage à respecter les règles et consignes de sécurité du camp. *</label>`,
